@@ -1,0 +1,377 @@
+/* =====================================================================
+   assets/css/style.css
+   Charte visuelle reprise de la maquette Figma :
+   aubergine profond, or, fond mauve clair.
+   ===================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --wine:        #3a0a2c;   /* panneau gauche, carte de profil sélectionnée */
+    --wine-deep:   #2a0720;   /* dégradé bas du panneau gauche */
+    --gold:        #c6a02c;   /* logo, bouton principal */
+    --gold-hover:  #b18d22;
+    --panel:       #ecd9e6;   /* fond du panneau droit */
+    --ink:         #2a2230;   /* texte foncé */
+    --muted:       #8a7c86;   /* texte secondaire */
+    --white:       #ffffff;
+    --border:      #e3d0dd;   /* bordures de champs */
+    --error:       #c0392b;
+    --success-bg:  #e8f5e9;
+    --success-tx:  #2e7d32;
+    --error-bg:    #fdecea;
+
+    --radius:      16px;
+    --radius-sm:   12px;
+    --font:        'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body.auth-body {
+    margin: 0;
+    font-family: var(--font);
+    color: var(--ink);
+    background: var(--panel);
+}
+
+/* ---------- Découpage en deux panneaux ---------- */
+.auth-split {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ---------- Panneau gauche : identité ---------- */
+.brand-panel {
+    position: relative;
+    flex: 0 0 44%;
+    max-width: 44%;
+    background: linear-gradient(160deg, var(--wine) 0%, var(--wine-deep) 100%);
+    color: var(--white);
+    padding: 56px 56px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+/* Anneaux concentriques en filigrane */
+.brand-rings {
+    position: absolute;
+    top: 50%;
+    left: 38%;
+    width: 720px;
+    height: 720px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background:
+        radial-gradient(circle, transparent 0 118px, rgba(255,255,255,.05) 118px 120px, transparent 120px) center / 100% 100% no-repeat,
+        radial-gradient(circle, transparent 0 198px, rgba(255,255,255,.05) 198px 200px, transparent 200px) center / 100% 100% no-repeat,
+        radial-gradient(circle, transparent 0 288px, rgba(255,255,255,.04) 288px 290px, transparent 290px) center / 100% 100% no-repeat,
+        radial-gradient(circle, transparent 0 358px, rgba(255,255,255,.04) 358px 360px, transparent 360px) center / 100% 100% no-repeat;
+    pointer-events: none;
+}
+
+.brand-top { position: relative; z-index: 1; }
+
+.brand-logo {
+    width: 68px;
+    height: 68px;
+    border-radius: 18px;
+    background: var(--gold);
+    color: var(--wine);
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: .5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.brand-title {
+    font-size: 44px;
+    line-height: 1.08;
+    font-weight: 800;
+    margin: 0 0 22px;
+    letter-spacing: -.5px;
+}
+
+.brand-sub {
+    font-size: 16px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, .72);
+    max-width: 340px;
+    margin: 0;
+}
+
+.brand-stats {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 28px;
+}
+
+.stat {
+    position: relative;
+    padding-left: 18px;
+}
+.stat::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 4px; bottom: 4px;
+    width: 1px;
+    background: rgba(255, 255, 255, .22);
+}
+.stat-num {
+    display: block;
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1;
+}
+.stat-label {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, .6);
+}
+
+/* ---------- Panneau droit : formulaire ---------- */
+.form-panel {
+    flex: 1;
+    background: var(--panel);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px;
+}
+
+.form-card {
+    width: 100%;
+    max-width: 440px;
+}
+.form-card-wide { max-width: 560px; }
+
+.form-title {
+    font-size: 34px;
+    font-weight: 800;
+    margin: 0 0 8px;
+    letter-spacing: -.5px;
+}
+.form-sub {
+    color: var(--muted);
+    font-size: 15px;
+    margin: 0 0 28px;
+}
+
+/* ---------- Champs ---------- */
+.field { margin-bottom: 18px; }
+
+.field-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--ink);
+}
+.field-label.small-caps {
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+.opt { font-weight: 500; color: var(--muted); }
+
+.input {
+    width: 100%;
+    border: 1px solid var(--border);
+    background: var(--white);
+    border-radius: 14px;
+    padding: 16px 18px;
+    font-size: 15px;
+    font-family: var(--font);
+    color: var(--ink);
+    transition: border-color .15s, box-shadow .15s;
+}
+.input::placeholder { color: #b6a6b1; }
+.input:focus {
+    outline: none;
+    border-color: var(--wine);
+    box-shadow: 0 0 0 3px rgba(58, 10, 44, .12);
+}
+.input-error { border-color: var(--error); }
+
+.field-msg {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--error);
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* ---------- Sélecteur de profil / type (boutons radio en cartes) ---------- */
+.profile-select,
+.type-select {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+.profile-select { grid-template-columns: repeat(3, 1fr); }
+.type-select    { grid-template-columns: repeat(2, 1fr); margin-bottom: 8px; }
+
+.profile-select input,
+.type-select input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.profile-select label,
+.type-select label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 64px;
+    padding: 10px 8px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    cursor: pointer;
+    transition: background .15s, color .15s, border-color .15s, box-shadow .15s;
+}
+.profile-select label:hover,
+.type-select label:hover { border-color: var(--wine); }
+
+.profile-select input:checked + label,
+.type-select input:checked + label {
+    background: var(--wine);
+    border-color: var(--wine);
+    color: var(--white);
+    box-shadow: 0 6px 18px rgba(58, 10, 44, .25);
+}
+
+.profile-select input:focus-visible + label,
+.type-select input:focus-visible + label {
+    outline: 3px solid rgba(58, 10, 44, .35);
+    outline-offset: 2px;
+}
+
+/* ---------- Champs conditionnels ---------- */
+.conditional { margin: 8px 0 4px; }
+.conditional[hidden] { display: none; }
+
+/* ---------- Bouton principal ---------- */
+.btn-gold {
+    width: 100%;
+    border: none;
+    background: var(--gold);
+    color: var(--wine);
+    font-family: var(--font);
+    font-size: 16px;
+    font-weight: 700;
+    padding: 17px;
+    border-radius: 14px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background .15s, transform .05s;
+}
+.btn-gold:hover { background: var(--gold-hover); }
+.btn-gold:active { transform: translateY(1px); }
+.btn-gold:focus-visible {
+    outline: 3px solid rgba(58, 10, 44, .35);
+    outline-offset: 2px;
+}
+
+/* ---------- Bas de formulaire ---------- */
+.form-foot {
+    margin-top: 22px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--muted);
+}
+.form-foot a {
+    color: var(--wine);
+    font-weight: 700;
+    text-decoration: none;
+}
+.form-foot a:hover { text-decoration: underline; }
+
+/* ---------- Alertes ---------- */
+.alert {
+    border-radius: var(--radius-sm);
+    padding: 13px 16px;
+    font-size: 14px;
+    margin-bottom: 20px;
+    border-left: 4px solid transparent;
+}
+.alert-error   { background: var(--error-bg); color: var(--error); border-left-color: var(--error); }
+.alert-success { background: var(--success-bg); color: var(--success-tx); border-left-color: var(--success-tx); }
+
+/* =====================================================================
+   Tableau de bord (zone connectée) — style minimal cohérent
+   ===================================================================== */
+body.app-body {
+    margin: 0;
+    font-family: var(--font);
+    color: var(--ink);
+    background: #f6eef3;
+}
+.app-header {
+    background: linear-gradient(160deg, var(--wine) 0%, var(--wine-deep) 100%);
+    color: var(--white);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.app-header .brand-logo { width: 44px; height: 44px; border-radius: 12px; font-size: 16px; margin: 0; }
+.app-header-left { display: flex; align-items: center; gap: 14px; }
+.app-header-left strong { font-size: 17px; }
+.app-user { display: flex; align-items: center; gap: 16px; font-size: 14px; }
+.app-user .badge {
+    background: var(--gold); color: var(--wine);
+    padding: 4px 12px; border-radius: 999px; font-weight: 700; font-size: 12px;
+}
+.app-logout { color: var(--white); text-decoration: none; font-weight: 600; opacity: .9; }
+.app-logout:hover { opacity: 1; text-decoration: underline; }
+.app-main { max-width: 960px; margin: 40px auto; padding: 0 24px; }
+.app-card {
+    background: var(--white); border-radius: var(--radius);
+    padding: 32px; box-shadow: 0 2px 18px rgba(58, 10, 44, .06);
+}
+
+/* =====================================================================
+   Responsive
+   ===================================================================== */
+@media (max-width: 900px) {
+    .auth-split { flex-direction: column; }
+    .brand-panel {
+        flex: none;
+        max-width: 100%;
+        padding: 36px 28px;
+    }
+    .brand-title { font-size: 32px; }
+    .brand-rings { display: none; }
+    .form-panel { padding: 32px 24px; }
+}
+
+@media (max-width: 520px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    .profile-select { grid-template-columns: 1fr; }
+    .brand-stats { gap: 18px; }
+    .stat-num { font-size: 24px; }
+    .form-title { font-size: 28px; }
+}

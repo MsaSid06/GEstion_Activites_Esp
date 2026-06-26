@@ -88,19 +88,6 @@ create table ACTIVITE(
     constraint fk_activite_utilisateur_matricule_user foreign key (matricule_user) references UTILISATEUR(matricule_user)
 );
 
-DELIMITER //
-
-CREATE TRIGGER trg_check_date_debut
-BEFORE INSERT ON ACTIVITE
-FOR EACH ROW
-BEGIN
-    IF NEW.date_debut <= NOW() THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'La date de début doit être dans le futur';
-    END IF;
-END//
-
-DELIMITER ;
 
 create table NOTIFICATION(
     id_not int auto_increment,
@@ -115,71 +102,20 @@ create table NOTIFICATION(
 );
 
 
+DELIMITER //
 
+CREATE TRIGGER trg_check_date_debut
+BEFORE INSERT ON ACTIVITE
+FOR EACH ROW
+BEGIN
+    IF NEW.date_debut <= NOW() THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'La date de début doit être dans le futur';
+    END IF;
+END//
 
---voici les insertion et tt
+DELIMITER ;
 
--- INSERT INTO UTILISATEUR (matricule_user, nom, prenom, email, tel, mot_de_passe, profil, niveau_acces) VALUES
--- ('U001','Sidime','Moussa','moussa.sidime@esp.sn','770000001','pass001','ADMIN','TOTAL'),
--- ('U002','Dia','Assane','assane.dia@esp.sn','770000002','pass002','GESTIONNAIRE','STRUCTURE'),
--- ('U003','Cissokho','Maimouna','maimouna.cissokho@esp.sn','770000003','pass003','GESTIONNAIRE','STRUCTURE'),
--- ('U004','Mbaye','Aissata','aissata.mbaye@esp.sn','770000004','pass004','GESTIONNAIRE','STRUCTURE'),
--- ('U005','Diop','Awa','awa.diop@esp.sn','770000005','pass005','ETUDIANT',NULL),
--- ('U006','Ndiaye','Cheikh','cheikh.ndiaye@esp.sn','770000006','pass006','ETUDIANT',NULL),
--- ('U007','Sow','Fatou','fatou.sow@esp.sn','770000007','pass007','ETUDIANT',NULL),
--- ('U008','Ba','Ousmane','ousmane.ba@esp.sn','770000008','pass008','PERSONNEL',NULL),
--- ('U009','Gueye','Ramatoulaye','rama.gueye@esp.sn','770000009','pass009','PERSONNEL',NULL),
--- ('U010','Sarr','Modou','modou.sarr@esp.sn','770000010','pass010','GESTIONNAIRE','STRUCTURE'),
--- ('U011','Diagne','Aminata','aminata.diagne@esp.sn','770000011','pass011','ETUDIANT',NULL),
--- ('U012','Fall','Mamadou','mamadou.fall@esp.sn','770000012','pass012','PERSONNEL',NULL);
-
-
--- INSERT INTO STRUCTURE (id_struct, nom_struct, desc_struct, mail, tel, type_struct) VALUES
--- ('S001','Direction ESP','Direction generale de l ecole','direction@esp.sn','338000001','SERVICE'),
--- ('S002','Departement Genie Informatique','Departement de formation en informatique','dgi@esp.sn','338000002','DEPARTEMENT'),
--- ('S003','Departement Genie Civil','Departement de formation en genie civil','dgc@esp.sn','338000003','DEPARTEMENT'),
--- ('S004','Service Scolarite','Gestion administrative des etudiants','scolarite@esp.sn','338000004','SERVICE'),
--- ('S005','Amicale des Etudiants','Amicale generale des etudiants de l ESP','amicale@esp.sn','338000005','AMICALE'),
--- ('S006','Département Génie Electrique','Departement de formation en genie electrique','dge@esp.sn','338000006','DEPARTEMENT'),
--- ('S007','Département Génie Mécanique','Departement de formation en genie mecanique','dgm@esp.sn','338000007','DEPARTEMENT'),
--- ('S008','Département Génie Chimique','Departement de formation en genie chimique','dgc@esp.sn','338000008','DEPARTEMENT'),
--- ('S009','Departement de Gestion','Departement de formation en gestion','dg@esp.sn','338000009','DEPARTEMENT'),
--- ('S010','Association des professeurs','Association des professeurs de l ESP','professeurs@esp.sn','338000010','ASSOCIATION');
-
-
--- INSERT INTO ETUDIANT (matricule_user, filiere, niveau) VALUES
--- ('U005','Genie Logiciel','Licence 2'),
--- ('U006','Genie Logiciel','Licence 3'),
--- ('U007','Genie Civil','Licence 1'),
--- ('U011','Genie Electrique','DIC 1');
-
-
--- INSERT INTO PERSONNEL (matricule_user, poste, specialite) VALUES
--- ('U008','Secretaire','Gestion administrative'),
--- ('U009','Technicien','Reseaux et systemes'),
--- ('U012','Enseignant','Informatique');
-
-
--- INSERT INTO GESTIONNAIRE (matricule_user, id_struct) VALUES
--- ('U002','S002'),
--- ('U003','S004'),
--- ('U004','S002'),
--- ('U004','S005'),
--- ('U010','S003');
-
-
--- INSERT INTO ACTIVITE (matricule_user, titre, description, type_act, date_debut, date_fin, lieu) VALUES
--- ('U002','Examen Programmation Web','Examen final du module de programmation web pour les étudiants en licence et DUT 2','EXAMEN','2026-07-10 08:00:00','2026-07-10 11:00:00','Salle Info 1'),
--- ('U002','Soutenance Projet Tutore','Presentation des projets tutores L2 GLSI','SOUTENANCE','2026-07-15 09:00:00','2026-07-15 17:00:00','Amphi A'),
--- ('U003','Reunion de coordination','Reunion des chefs de service','REUNION','2026-07-05 10:00:00','2026-07-05 12:00:00','Salle de reunion'),
--- ('U004','Seminaire IA','Seminaire sur l intelligence artificielle','SEMINAIRE','2026-08-01 09:00:00','2026-08-02 17:00:00','Amphi B'),
--- ('U010','Journee Portes Ouvertes','Presentation des filieres aux nouveaux bacheliers','CONFERENCE','2026-09-20 08:00:00','2026-09-20 18:00:00','Grand amphi');
-
-
--- INSERT INTO NOTIFICATION (id_emetteur, id_act, message, date_envoi) VALUES
--- ('U002',1,'Rappel : examen de programmation web le 10 juillet.','2026-06-20 09:00:00'),
--- ('U002',2,'Soutenances prevues le 15 juillet, soyez ponctuels.','2026-06-22 10:00:00'),
--- ('U004',4,'Inscriptions ouvertes pour le seminaire IA.','2026-06-25 14:00:00');
 
 
 

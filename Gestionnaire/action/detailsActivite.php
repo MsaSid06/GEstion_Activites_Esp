@@ -1,10 +1,12 @@
 <?php
 session_start();
-require_once __DIR__ . '/../config/connexion.php';
-require_once __DIR__ . '/../models/activite.php';
+
+
+require_once  '../config/connexion.php';
+require_once  '../models/activite.php';
 
 if (!isset($_SESSION['matricule_user'])) {
-    header("Location: ../index.php");
+    header("Location: /GestionDesActiviteEsp/index.php");
     exit;
 }
 

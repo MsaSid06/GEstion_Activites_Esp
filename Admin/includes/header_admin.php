@@ -11,8 +11,8 @@
  *   - $sous_titre, $head_auto (false pour ne pas afficher l'en-tête de page auto)
  */
 
-require_once './icons.php';
-require_once './notifications.php';
+require_once __DIR__ . '/icons.php';
+require_once __DIR__ . '/notifications.php';
 
 $user        = utilisateur_courant();
 $page_active = $page_active ?? '';
@@ -29,8 +29,8 @@ $notif_count   = isset($pdo) ? compter_notifications($pdo) : 0;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= e($titre) ?> — Administration ESP</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/css/admin.css">
+    <link rel="stylesheet" href="/GestionDesActiviteEsp/Admin/admin/assets/css/style.css">
+    <link rel="stylesheet" href="/GestionDesActiviteEsp/Admin/admin/assets/css/admin.css">
 </head>
 <body class="admin-body">
 
@@ -38,7 +38,7 @@ $notif_count   = isset($pdo) ? compter_notifications($pdo) : 0;
     <div class="adm-brand">
         <div class="adm-logo">ESP</div>
         <div class="adm-brand-text">
-            <strong>ESP Dakar</strong>
+            <strong><?= strtoupper($_SESSION['nom']) . " " . $_SESSION["prenom"]?></strong>
             <span>Administrateur</span>
         </div>
     </div>

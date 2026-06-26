@@ -1,9 +1,10 @@
 <?php
 session_start();
+
 require_once "../config/connexion.php";
 
 if (!isset($_SESSION['matricule_user'])) {
-    header("Location: ../index.php");
+    header("Location: /GestionDesActiviteEsp/index.php");
     exit;
 }
 
@@ -168,42 +169,42 @@ function e(string $v): string
     <?php  include "./footerGest.php" ?>
 
 
-    <script>
-        document.getElementById("formActivite").addEventListener("submit", function(e) {
-
-            let ok = true;
-
-            function err(id, msg) {
-                document.getElementById("err-" + id).innerText = msg;
-                ok = false;
-            }
-
-            function clear(id) {
-                document.getElementById("err-" + id).innerText = "";
-            }
-
-            const champs = ["titre", "lieu", "type_act", "date_debut", "date_fin", "description"];
-
-            champs.forEach(c => {
-                const el = document.getElementById(c);
-                if (!el.value.trim()) {
-                    err(c, "Ce champ est obligatoire pour créer une activité.");
-                } else {
-                    clear(c);
-                }
-            });
-
-            const d1 = new Date(date_debut.value);
-            const d2 = new Date(date_fin.value);
-
-            if (d2 < d1) {
-                err("date_fin", "La date de fin doit être après la date de début.");
-            }
-
-            if (!ok) e.preventDefault();
-        });
-    </script>
 
 </body>
+<script>
+    document.getElementById("formActivite").addEventListener("submit", function(e) {
+
+        let ok = true;
+
+        function err(id, msg) {
+            document.getElementById("err-" + id).innerText = msg;
+            ok = false;
+        }
+
+        function clear(id) {
+            document.getElementById("err-" + id).innerText = "";
+        }
+
+        const champs = ["titre", "lieu", "type_act", "date_debut", "date_fin", "description"];
+
+        champs.forEach(c => {
+            const el = document.getElementById(c);
+            if (!el.value.trim()) {
+                err(c, "Ce champ est obligatoire pour créer une activité.");
+            } else {
+                clear(c);
+            }
+        });
+
+        const d1 = new Date(date_debut.value);
+        const d2 = new Date(date_fin.value);
+
+        if (d2 < d1) {
+            err("date_fin", "La date de fin doit être après la date de début.");
+        }
+
+        if (!ok) e.preventDefault();
+    });
+</script>
 
 </html>

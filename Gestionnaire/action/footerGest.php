@@ -1,13 +1,15 @@
 <?php
-$page = basename($_SERVER['PHP_SELF']);
-?>
+// session_start();
 
+$page = basename($_SERVER['PHP_SELF']);
+// define("ROOT", "/GestionDesActiviteEsp");
+?>
 <nav class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50
             flex items-center justify-around
             w-[90%] max-w-md h-16
             bg-white rounded-3xl shadow-xl">
 
-    <a href="/PROJET_TUTORE/DashboardGestionnaire.php" class="<?= $page == 'DashboardGestionnaire.php'
+    <a href="/GestionDesActiviteEsp/Gestionnaire/DashboardGestionnaire.php" class="<?= $page == 'DashboardGestionnaire.php'
             ? 'text-white bg-violet-600 -translate-y-3 shadow-lg shadow-violet-300'
             : 'text-gray-400'
 ?>
@@ -16,7 +18,7 @@ $page = basename($_SERVER['PHP_SELF']);
         <i class="fa-solid fa-house text-xl"></i>
     </a>
 
-    <a href="/PROJET_TUTORE/action/mesActivites.php" class="<?= $page == 'mesActivites.php'
+    <a href="/GestionDesActiviteEsp/Gestionnaire/action/mesActivites.php" class="<?= $page == 'mesActivites.php'
     ? 'text-white bg-violet-600 -translate-y-3 shadow-lg shadow-violet-300'
     : 'text-gray-400'
 ?>
@@ -25,7 +27,7 @@ $page = basename($_SERVER['PHP_SELF']);
         <i class="fa-solid fa-calendar-days text-xl"></i>
     </a>
 
-    <a href="/PROJET_TUTORE/action/formCreationActivite.php" class="<?= $page == 'formCreationActivite.php'
+    <a href="/GestionDesActiviteEsp/Gestionnaire/action/formCreationActivite.php" class="<?= $page == 'formCreationActivite.php'
     ? 'bg-violet-700 scale-110'
     : 'bg-gray-600'
 ?>
@@ -39,7 +41,7 @@ $page = basename($_SERVER['PHP_SELF']);
         <i class="fa-solid fa-plus"></i>
     </a>
 
-    <a href="/PROJET_TUTORE/action/Affiche_notif.php" class="<?= $page == 'Affiche_notif.php'
+    <a href="/GestionDesActiviteEsp/Gestionnaire/action/Affiche_notif.php" class="<?= $page == 'Affiche_notif.php'
     ? 'text-white bg-violet-600 -translate-y-3 shadow-lg shadow-violet-300'
     : 'text-gray-400'
 ?>

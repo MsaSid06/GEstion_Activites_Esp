@@ -20,5 +20,5 @@ if ($id_act < 0) {
 
 creerNotification($pdo, $id_emetteur, $id_act, $message);
 
-header("Location: ../action/Affiche_notif.php");
+header("Location: ./Affiche_notif.php");
 exit;

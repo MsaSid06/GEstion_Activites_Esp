@@ -6,7 +6,7 @@
  */
 $page_active = $page_active ?? '';
 $user        = utilisateur_courant();
-$initiales   = strtoupper(mb_substr($user['prenom'], 0, 1) . mb_substr($user['nom'], 0, 1));
+$initiales   = strtoupper(mb_substr($_SESSION['prenom'], 0, 1) . mb_substr($_SESSION['nom'], 0, 1));
 
 $onglets = [
     'dashboard'     => ['dashboard.php',     'grid',       'Vue d\'ensemble'],

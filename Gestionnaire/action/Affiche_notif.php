@@ -1,12 +1,11 @@
 <?php
 session_start();
-
-require_once __DIR__ . '/../config/connexion.php';
-require_once __DIR__ . '/../models/notifications.php';
+require_once '../config/connexion.php';
+require_once '../models/notifications.php';
 
 
 if (!isset($_SESSION['matricule_user'])) {
-    header("Location: ../index.php");
+    header("Location: /GestionDesActiviteEsp/index.php");
     exit;
 }
 
@@ -90,11 +89,6 @@ $notifications = notifications_recentes($pdo, $_SESSION["matricule_user"]);
                     <!-- INFOS -->
                     <div class="text-sm text-gray-500 mt-1 flex flex-wrap gap-3">
 
-                        <!-- EMETTEUR -->
-                        <!-- <span class="flex items-center gap-1">
-                            <i class="fa-solid fa-user"></i>
-                        </span> -->
-
                         <!-- DATE -->
                         <span class="flex items-center gap-1">
                             <i class="fa-solid fa-calendar-days"></i>
@@ -158,7 +152,6 @@ $notifications = notifications_recentes($pdo, $_SESSION["matricule_user"]);
             <?php endif; ?>
 
         </div>
-
     </section>
     <?php include "./footerGest.php" ?>
 </body>

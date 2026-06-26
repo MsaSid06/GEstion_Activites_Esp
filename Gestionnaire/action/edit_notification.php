@@ -1,26 +1,27 @@
 <?php
 session_start();
-require_once "../config/connexion.php";
-require_once "../models/notifications.php";
+require_once   "../config/connexion.php";
+require_once   "../models/notifications.php";
 
 $pdo = connexionBD();
 
 if (!isset($_SESSION['matricule_user'])) {
-    header("Location: ../index.php");
+    header("Location: /GestionDesActiviteEsp/index.php");
+
     exit;
 }
 
 $id_not = isset($_GET['id']) ? (int) $_GET['id'] : null;
 
 if (!$id_not) {
-    header("Location: ./notifications.php");
+    header("Location: ../models/notifications.php");
     exit;
 }
 
 $notif = getNotificationParId($pdo, $id_not);
 
 if (!$notif) {
-    header("Location: ./notifications.php");
+    header("Location: ../models/notifications.php");
     exit;
 }
 
@@ -92,6 +93,7 @@ function e(string $v): string
         </section>
 
     </main>
+    <?php include "./footerGest.php" ?>
 
 </body>
 

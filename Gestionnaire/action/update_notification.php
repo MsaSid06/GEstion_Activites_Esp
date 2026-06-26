@@ -7,7 +7,7 @@ require_once "../models/notifications.php";
 $pdo = connexionBD();
 
 if (!isset($_SESSION['matricule_user'])) {
-    header("Location: ../index.php");
+    header("Location: /GestionDesActiviteEsp/index.php");
     exit;
 }
 

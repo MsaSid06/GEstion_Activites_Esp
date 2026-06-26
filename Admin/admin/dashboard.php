@@ -1,17 +1,25 @@
 <?php
+session_start();
 /**
  * admin/dashboard.php
  * Vue d'ensemble de l'administration. Réservé au profil ADMIN.
  */
 
-require_once '/GestionDesActiviteEsp/Admin/includes/auth.php';
-require_once '/GestionDesActiviteEsp/Admin/config/database.php';
+require_once  __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . "/../config/database.php";
+// $pdo = connexionBD();
 
 // exiger_profil(['ADMIN']);
 if (!isset($_SESSION['matricule_user'])) {
-    header("Location: ../index.php");
+    header("Location: /GestionDesActiviteEsp/index.php");
     exit;
 }
+$chartLabels = [];
+$chartValues = [];
+
+$nb_users = 0;
+$nb_gestionnaires = 0;
+$nb_structures = 0;
 /* ---------- Statistiques globales ---------- */
 $nb_users         = (int) $pdo->query('SELECT COUNT(*) FROM UTILISATEUR')->fetchColumn();
 $nb_activites     = (int) $pdo->query('SELECT COUNT(*) FROM ACTIVITE')->fetchColumn();
@@ -66,7 +74,7 @@ $page_active = 'dashboard';
 $titre       = "Vue d'ensemble";
 $sous_titre  = 'Toutes les structures · Année ' . date('Y');
 
-include '/GestionDesActiviteEsp/Admin/includes/header_admin.php';
+include __DIR__ . '/../includes/header_admin.php';
 ?>
 
 <!-- Cartes de statistiques -->
@@ -116,7 +124,7 @@ include '/GestionDesActiviteEsp/Admin/includes/header_admin.php';
     </div>
 
     <div class="nav-cards">
-        <a class="nav-card" href="utilisateurs.php">
+        <a class="nav-card" href="./utilisateurs.php">
             <span
                 class="nav-ico"><?= icone('users', 24) ?></span>
             <span class="nav-text">
@@ -128,7 +136,7 @@ include '/GestionDesActiviteEsp/Admin/includes/header_admin.php';
                 class="nav-chev"><?= icone('chevron-right', 20) ?></span>
         </a>
 
-        <a class="nav-card" href="gestionnaires.php">
+        <a class="nav-card" href="./gestionnaires.php">
             <span
                 class="nav-ico"><?= icone('user-check', 24) ?></span>
             <span class="nav-text">
@@ -139,7 +147,7 @@ include '/GestionDesActiviteEsp/Admin/includes/header_admin.php';
                 class="nav-chev"><?= icone('chevron-right', 20) ?></span>
         </a>
 
-        <a class="nav-card" href="structures.php">
+        <a class="nav-card" href="./structures.php">
             <span
                 class="nav-ico"><?= icone('building', 24) ?></span>
             <span class="nav-text">

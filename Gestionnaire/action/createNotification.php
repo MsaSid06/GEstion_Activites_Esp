@@ -1,9 +1,11 @@
 <?php
 session_start();
-require_once "../config/connexion.php";
+
+
+require_once  "../config/connexion.php";
 
 if (!isset($_SESSION['matricule_user'])) {
-    header("Location: ../index.php");
+    header("Location: /GestionDesActiviteEsp/index.php");
     exit;
 }
 
@@ -100,6 +102,7 @@ function e(string $v): string
         </section>
 
     </main>
+    <?php include  "./footerGest.php" ?>
 
 </body>
 

@@ -1,11 +1,12 @@
 <?php
 session_start();
-require_once __DIR__ . '/config/connexion.php';
-require_once __DIR__ . '/models/activite.php';
+define("ROOT", "/GestionDesActiviteEsp");
+require_once  './config/connexion.php';
+require_once './models/activite.php';
 
 
 if (!isset($_SESSION['matricule_user'])) {
-    header("Location: ../index.php");
+    header("Location: /GestionDesActiviteEsp/index.php");
     exit;
 }
 
@@ -73,15 +74,8 @@ function act_terminer()
     return $activites_fini;
 }
 
-/**
- * Détermine le statut d'une activité (terminée / en cours / à venir)
- * et renvoie le libellé + les classes Tailwind associées.
- *
- * - Terminée  -> vert
- * - En cours  -> orange
- * - À venir   -> bleu
- */
-function getStatutActivite($act, $dateDuJour)
+
+function getStatutActivite(array $act, $dateDuJour)
 {
     $dateDebut = new DateTime($act["date_debut"]);
     $dateFin   = new DateTime($act["date_fin"]);
@@ -136,7 +130,7 @@ foreach ($activites as $a) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard Activités</title>
-    <link rel="stylesheet" href="style.css">
+    <!-- <link rel="stylesheet" href="style.css"> -->
     <link rel="stylesheet" href="./assets/stylegest.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -154,7 +148,7 @@ foreach ($activites as $a) {
                 <h3> <?php echo $_SESSION["prenom"] . " ". strtoupper($_SESSION["nom"])?>
                 </h3>
                 <small>Gestionnaire</small>
-                <a href="/PROJET_TUTORE/controllers/logout.php"
+                <a href="./controllers/logout.php"
                     class="flex items-center gap-2 text-red-500 hover:text-red-600 transition">
 
                     <i class="fa-solid fa-right-from-bracket"></i>
@@ -315,7 +309,7 @@ foreach ($activites as $a) {
 
     </main>
 
-    <?php  include "./action/footerGest.php" ?>
+    <?php  include   "./action/footerGest.php" ?>
 
     <script src="./assets/scriptgest.js"></script>
 

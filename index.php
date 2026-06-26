@@ -205,40 +205,40 @@ if (isset($_SESSION['matricule_user'])) {
           .then((data) => {
             switch (data) {
               case '1':
-                window.location.href = "./Etudiant_Personnel/dashboard_etd.php";
+                window.location.href = "/GestionDesActiviteEsp/Etudiant_Personnel/dashboard_etd.php";
                 break;
               case '2':
-                window.location.href = "./Gestionnaire/DashboardGestionnaire.php"
+                window.location.href = "/GestionDesActiviteEsp/Gestionnaire/DashboardGestionnaire.php"
                 break;
 
               case '3':
-                window.location.href = "./Admin/admin/dashboard.php";
+                window.location.href = "/GestionDesActiviteEsp/Admin/admin/dashboard.php";
                 break;
 
             }
 
             if (data != "succes") {
 
-              document.getElementById("message").innerText = data;
+              document.getElementById("message").innerHTML = data;
               // window.location.href = "./Gestionnaire/DashboardGestionnaire.php"
 
             }
           });
       });
-    fetch("../controllers/login.php", {
-        method: "POST",
-        body: formData,
-      })
-      .then((response) => response.text())
-      .then((data) => {
-        if (data.trim() === "success") {
-          window.location.href = "../DashboardGestionnaire.php";
-        }
+    // fetch("../controllers/login.php", {
+    //     method: "POST",
+    //     body: formData,
+    //   })
+    //   .then((response) => response.text())
+    //   .then((data) => {
+    //     if (data.trim() === "success") {
+    //       window.location.href = "../DashboardGestionnaire.php";
+    //     }
 
-        if (data.trim() === "invalid") {
-          alert("Email ou mot de passe incorrect");
-        }
-      });
+    //     if (data.trim() === "invalid") {
+    //       alert("Email ou mot de passe incorrect");
+    //     }
+    //   });
   </script>
 </body>
 

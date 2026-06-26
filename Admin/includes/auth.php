@@ -10,7 +10,7 @@
  *   - admin               -> profil  ADMIN
  */
 
-require_once './functions.php';
+require_once __DIR__ . '/functions.php';
 
 /**
  * Correspondance entre l'espace d'accès choisi à la connexion

@@ -1,11 +1,12 @@
 <?php
 session_start();
+
 require_once "../config/connexion.php";
 require_once "../models/activite.php";
 
 
 if (!isset($_SESSION['matricule_user'])) {
-    header("Location: ../index.php");
+    header("Location: /GestionDesActiviteEsp/index.php");
     exit;
 }
 
@@ -28,7 +29,6 @@ $old = $old ?? [
 ];
 $errors = $errors ?? [];
 
-// Doit correspondre à la contrainte CHECK (type_act) de la table ACTIVITE.
 $TYPES = [
     'COURS'                   => 'Cours',
     'EXAMEN'                  => 'Examen',
@@ -233,97 +233,97 @@ function classeSpanErreur(bool $enErreur): string
 
     </main>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var form = document.getElementById('formActivite');
-
-            // Liste des champs obligatoires, avec leur span d'erreur et leur message.
-            var champs = [{
-                    id: 'titre',
-                    err: 'err-titre',
-                    message: 'Le titre est requis.'
-                },
-                {
-                    id: 'lieu',
-                    err: 'err-lieu',
-                    message: 'Le lieu est requis.'
-                },
-                {
-                    id: 'type_act',
-                    err: 'err-type_act',
-                    message: "Le type d'activité est requis."
-                },
-                {
-                    id: 'date_debut',
-                    err: 'err-date_debut',
-                    message: 'La date de début est requise.'
-                },
-                {
-                    id: 'date_fin',
-                    err: 'err-date_fin',
-                    message: 'La date de fin est requise.'
-                },
-                {
-                    id: 'description',
-                    err: 'err-description',
-                    message: 'La description est requise.'
-                },
-            ];
-
-            function afficherErreur(champId, erreurId, message) {
-                var input = document.getElementById(champId);
-                var span = document.getElementById(erreurId);
-                input.classList.add('border-rose-400', 'focus:border-rose-500', 'focus:ring-rose-200');
-                input.classList.remove('border-gray-300', 'focus:border-[#5b2150]', 'focus:ring-[#5b2150]/20');
-                span.textContent = message;
-                span.classList.remove('hidden');
-            }
-
-            function masquerErreur(champId, erreurId) {
-                var input = document.getElementById(champId);
-                var span = document.getElementById(erreurId);
-                input.classList.remove('border-rose-400', 'focus:border-rose-500', 'focus:ring-rose-200');
-                input.classList.add('border-gray-300', 'focus:border-[#5b2150]', 'focus:ring-[#5b2150]/20');
-                span.textContent = '';
-                span.classList.add('hidden');
-            }
-
-            form.addEventListener('submit', function(e) {
-                var valide = true;
-
-                // 1. Vérifie que chaque champ obligatoire est rempli.
-                champs.forEach(function(champ) {
-                    var input = document.getElementById(champ.id);
-                    if (!input.value.trim()) {
-                        afficherErreur(champ.id, champ.err, champ.message);
-                        valide = false;
-                    } else {
-                        masquerErreur(champ.id, champ.err);
-                    }
-                });
-
-                // 2. Vérifie que date_fin >= date_debut (seulement si les deux sont remplies).
-                var dateDebut = document.getElementById('date_debut').value;
-                var dateFin = document.getElementById('date_fin').value;
-
-                if (dateDebut && dateFin && new Date(dateFin) < new Date(dateDebut)) {
-                    afficherErreur('date_fin', 'err-date_fin',
-                        'La date de fin doit être postérieure ou égale à la date de début.');
-                    valide = false;
-                }
-
-                if (!valide) {
-                    e.preventDefault();
-                }
-            });
-
-            // Bonus UX : empêche de choisir une date_fin avant la date_debut sélectionnée.
-            document.getElementById('date_debut').addEventListener('change', function() {
-                document.getElementById('date_fin').min = this.value;
-            });
-        });
-    </script>
-
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var form = document.getElementById('formActivite');
+
+        // Liste des champs obligatoires, avec leur span d'erreur et leur message.
+        var champs = [{
+                id: 'titre',
+                err: 'err-titre',
+                message: 'Le titre est requis.'
+            },
+            {
+                id: 'lieu',
+                err: 'err-lieu',
+                message: 'Le lieu est requis.'
+            },
+            {
+                id: 'type_act',
+                err: 'err-type_act',
+                message: "Le type d'activité est requis."
+            },
+            {
+                id: 'date_debut',
+                err: 'err-date_debut',
+                message: 'La date de début est requise.'
+            },
+            {
+                id: 'date_fin',
+                err: 'err-date_fin',
+                message: 'La date de fin est requise.'
+            },
+            {
+                id: 'description',
+                err: 'err-description',
+                message: 'La description est requise.'
+            },
+        ];
+
+        function afficherErreur(champId, erreurId, message) {
+            var input = document.getElementById(champId);
+            var span = document.getElementById(erreurId);
+            input.classList.add('border-rose-400', 'focus:border-rose-500', 'focus:ring-rose-200');
+            input.classList.remove('border-gray-300', 'focus:border-[#5b2150]', 'focus:ring-[#5b2150]/20');
+            span.textContent = message;
+            span.classList.remove('hidden');
+        }
+
+        function masquerErreur(champId, erreurId) {
+            var input = document.getElementById(champId);
+            var span = document.getElementById(erreurId);
+            input.classList.remove('border-rose-400', 'focus:border-rose-500', 'focus:ring-rose-200');
+            input.classList.add('border-gray-300', 'focus:border-[#5b2150]', 'focus:ring-[#5b2150]/20');
+            span.textContent = '';
+            span.classList.add('hidden');
+        }
+
+        form.addEventListener('submit', function(e) {
+            var valide = true;
+
+            // 1. Vérifie que chaque champ obligatoire est rempli.
+            champs.forEach(function(champ) {
+                var input = document.getElementById(champ.id);
+                if (!input.value.trim()) {
+                    afficherErreur(champ.id, champ.err, champ.message);
+                    valide = false;
+                } else {
+                    masquerErreur(champ.id, champ.err);
+                }
+            });
+
+            // 2. Vérifie que date_fin >= date_debut (seulement si les deux sont remplies).
+            var dateDebut = document.getElementById('date_debut').value;
+            var dateFin = document.getElementById('date_fin').value;
+
+            if (dateDebut && dateFin && new Date(dateFin) < new Date(dateDebut)) {
+                afficherErreur('date_fin', 'err-date_fin',
+                    'La date de fin doit être postérieure ou égale à la date de début.');
+                valide = false;
+            }
+
+            if (!valide) {
+                e.preventDefault();
+            }
+        });
+
+        // Bonus UX : empêche de choisir une date_fin avant la date_debut sélectionnée.
+        document.getElementById('date_debut').addEventListener('change', function() {
+            document.getElementById('date_fin').min = this.value;
+        });
+    });
+</script>
+
 
 </html>

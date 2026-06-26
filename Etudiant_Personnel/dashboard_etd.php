@@ -1,4 +1,5 @@
 <?php
+session_start();
 if (!isset($_SESSION['matricule_user'])) {
     header("Location: ../index.php");
     exit;
@@ -62,8 +63,12 @@ if (!isset($_SESSION['matricule_user'])) {
                 class="w-10 h-10 bg-esp-purple rounded-full flex items-center justify-center text-white font-black text-xs tracking-wider">
                 ESP</div>
             <div>
-                <h1 class="text-sm font-bold text-gray-900">ESP Dakar</h1>
-                <p id="user-full-name" class="text-xs text-gray-500 font-medium">Maimouna Cissokho (ETUDIANT)</p>
+                <h1 class="text-sm font-bold text-gray-900">
+                    <?= strtoupper($_SESSION['nom']) . ' ' . strtoupper($_SESSION['prenom'])?>
+                </h1>
+                <p id="user-full-name" class="text-xs text-gray-500 font-medium">
+                    <?= strtoupper($_SESSION['profil'])."(E)"?>
+                </p>
             </div>
         </div>
         <div class="flex items-center gap-6 relative">
@@ -88,7 +93,8 @@ if (!isset($_SESSION['matricule_user'])) {
                 <div id="notif-list" class="space-y-2.5 max-h-60 overflow-y-auto text-xs custom-scrollbar pr-1"></div>
             </div>
 
-            <button onclick="window.location.href='index.php'"
+
+            <a href="/GestionDesActiviteEsp/Gestionnaire/controllers/logout.php"
                 class="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-red-600 transition">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                     stroke="currentColor" class="w-5 h-5">
@@ -96,7 +102,8 @@ if (!isset($_SESSION['matricule_user'])) {
                         d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
                 </svg>
                 <span class="hidden sm:inline">Déconnexion</span>
-            </button>
+
+            </a>
         </div>
     </header>
 

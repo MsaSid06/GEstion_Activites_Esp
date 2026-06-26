@@ -2,6 +2,7 @@
 // api_login.php
 header('Content-Type: application/json');
 require_once 'db.php';
+$pdo = connexionBD();
 
 $input = json_decode(file_get_contents('php://input'), true);
 

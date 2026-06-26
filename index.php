@@ -145,7 +145,7 @@ if (isset($_SESSION['matricule_user'])) {
         Saisissez votre adresse email académique.
       </p>
 
-      <form class="space-y-4 mt-4">
+      <form class="space-y-4 mt-4" action="./envoiMailRecuperation.php">
         <input type="email" placeholder="nom.prenom@esp.sn" class="w-full px-4 py-3 bg-gray-50 rounded-xl" />
 
         <div class="flex justify-end gap-3">
@@ -214,15 +214,23 @@ if (isset($_SESSION['matricule_user'])) {
               case '3':
                 window.location.href = "/GestionDesActiviteEsp/Admin/admin/dashboard.php";
                 break;
+              default:
+                break;
 
             }
 
             if (data != "succes") {
+              // alert("Email ou mot de passe incorrect");
 
-              document.getElementById("message").innerHTML = data;
-              // window.location.href = "./Gestionnaire/DashboardGestionnaire.php"
-
+              document.getElementById("message").innerHTML = `<strong style="color:red">
+                Email ou mot de passe incorrect </strong>`
             }
+            // else if (data != "succes") {
+
+            //   document.getElementById("message").innerHTML = data;
+            //   // window.location.href = "./Gestionnaire/DashboardGestionnaire.php"
+
+            // }
           });
       });
     // fetch("../controllers/login.php", {

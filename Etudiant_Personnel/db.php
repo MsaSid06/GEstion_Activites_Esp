@@ -2,17 +2,13 @@
 
 declare(strict_types=1);
 
-/**
- * Connexion PDO à la base gestion_activites_esp
- */
-
 function connexionBD(): PDO
 {
-    $host    = 'localhost';
-    $dbname  = 'gestion_activites_esp';
-    $user    = 'root';
-    $password = 'lome2006';
-    $charset = 'utf8mb4';
+    $host     = 'localhost'; 
+    $dbname   = 'gestion_activites_esp';
+    $user     = 'root';
+    $password = '';  // ← CORRIGÉ : vide sur XAMPP
+    $charset  = 'utf8mb4';
 
     $dsn = "mysql:host={$host};dbname={$dbname};charset={$charset}";
 
@@ -28,3 +24,5 @@ function connexionBD(): PDO
         die('Erreur de connexion : ' . $e->getMessage());
     }
 }
+
+$pdo = connexionBD();

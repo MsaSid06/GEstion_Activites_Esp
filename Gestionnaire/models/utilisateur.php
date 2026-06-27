@@ -20,7 +20,7 @@ function creerUtilisateur(
     ?string $tel,
     string $mot_de_passe,
     string $profil,
-    int $niveau_acces = 0
+    int $niveau_acces = 1
 ): bool {
     $sql = "INSERT INTO UTILISATEUR (matricule_user, nom, prenom, email, tel, mot_de_passe, profil, niveau_acces)
             VALUES (:matricule_user, :nom, :prenom, :email, :tel, :mot_de_passe, :profil, :niveau_acces)";

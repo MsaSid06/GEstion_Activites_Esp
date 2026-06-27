@@ -17,17 +17,34 @@ if (isset($_SESSION['matricule_user'])) {
 
 <!doctype html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ESP Dakar - Authentification</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .bg-esp-purple { background-color: #4a0e4e; }
-    .text-esp-purple { color: #4a0e4e; }
-    .bg-esp-gold { background-color: #d4af37; }
-    .bg-right-pink { background-color: #eae0eb; }
-    .input-maquette-white { background-color: #FFFFFF !important; color: #1F2937; border: none; }
+    .bg-esp-purple {
+      background-color: #4a0e4e;
+    }
+
+    .text-esp-purple {
+      color: #4a0e4e;
+    }
+
+    .bg-esp-gold {
+      background-color: #d4af37;
+    }
+
+    .bg-right-pink {
+      background-color: #eae0eb;
+    }
+
+    .input-maquette-white {
+      background-color: #FFFFFF !important;
+      color: #1F2937;
+      border: none;
+    }
 
     .radial-circles {
       position: absolute;
@@ -47,13 +64,15 @@ if (isset($_SESSION['matricule_user'])) {
     }
 
     input::-ms-reveal,
-    input::-webkit-contacts-auto-fill-button { display: none !important; }
+    input::-webkit-contacts-auto-fill-button {
+      display: none !important;
+    }
   </style>
 </head>
 
 <body class="bg-gray-200 min-h-screen flex items-center justify-center p-4 font-sans antialiased">
   <div class="bg-white rounded-3xl shadow-2xl overflow-hidden max-w-5xl w-full flex flex-col md:flex-row min-h-[620px]">
-    
+
     <div class="bg-esp-purple text-white p-12 md:w-1/2 flex flex-col justify-between relative overflow-hidden">
       <div class="radial-circles"></div>
       <div class="relative z-10">
@@ -94,10 +113,13 @@ if (isset($_SESSION['matricule_user'])) {
               <input id="login-password" type="password" placeholder="••••••••"
                 class="w-full px-4 py-3 bg-white rounded-xl shadow-sm pr-12" />
               <!-- OEIL SVG CONNEXION -->
-              <button type="button" onclick="togglePasswordVisibility()" class="absolute right-4 top-3.5 text-gray-400 hover:text-gray-600 focus:outline-none">
+              <button type="button" onclick="togglePasswordVisibility()"
+                class="absolute right-4 top-3.5 text-gray-400 hover:text-gray-600 focus:outline-none">
                 <span id="eye-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                    stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                 </span>
@@ -112,7 +134,8 @@ if (isset($_SESSION['matricule_user'])) {
         </form>
 
         <p class="text-center text-xs text-gray-600 font-medium pt-2">
-          Nouveau ? <button onclick="toggleForm(true)" class="text-esp-purple font-bold hover:underline">S'inscrire ici</button>
+          Nouveau ? <button onclick="toggleForm(true)" class="text-esp-purple font-bold hover:underline">S'inscrire
+            ici</button>
         </p>
       </div>
 
@@ -141,10 +164,13 @@ if (isset($_SESSION['matricule_user'])) {
             <input id="reg-password" type="password" required placeholder="••••••••"
               class="w-full px-4 py-3 bg-white rounded-xl text-sm outline-none font-medium shadow-sm pr-10">
             <!-- OEIL SVG INSCRIPTION -->
-            <button type="button" onclick="toggleRegPasswordVisibility()" class="absolute right-3 text-gray-400 hover:text-gray-600 focus:outline-none">
+            <button type="button" onclick="toggleRegPasswordVisibility()"
+              class="absolute right-3 text-gray-400 hover:text-gray-600 focus:outline-none">
               <span id="eye-icon-reg">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                  stroke="currentColor" class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
                   <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
               </span>
@@ -172,13 +198,15 @@ if (isset($_SESSION['matricule_user'])) {
               class="w-full px-4 py-2.5 bg-gray-50 rounded-xl text-sm outline-none border border-gray-100 font-medium">
           </div>
 
-          <button type="submit" class="w-full bg-esp-purple hover:bg-[#3b0b3e] text-white font-bold text-xs py-3.5 rounded-xl uppercase tracking-wider transition shadow-md mt-2">
+          <button type="submit"
+            class="w-full bg-esp-purple hover:bg-[#3b0b3e] text-white font-bold text-xs py-3.5 rounded-xl uppercase tracking-wider transition shadow-md mt-2">
             Créer mon compte
           </button>
         </form>
 
         <p class="text-center text-xs text-gray-600 font-medium">
-          Déjà inscrit ? <button onclick="toggleForm(false)" class="text-esp-purple font-bold hover:underline">Se connecter</button>
+          Déjà inscrit ? <button onclick="toggleForm(false)" class="text-esp-purple font-bold hover:underline">Se
+            connecter</button>
         </p>
       </div>
 
@@ -257,6 +285,7 @@ if (isset($_SESSION['matricule_user'])) {
     function openForgotPasswordModal() {
       document.getElementById("forgot-modal").classList.remove("hidden");
     }
+
     function closeForgotPasswordModal() {
       document.getElementById("forgot-modal").classList.add("hidden");
     }
@@ -264,12 +293,12 @@ if (isset($_SESSION['matricule_user'])) {
     function selectRole(role) {
       currentRole = role;
       const isEtu = role === 'ETUDIANT';
-      document.getElementById('role-etu').className = isEtu
-        ? "py-2.5 rounded-lg text-xs font-bold transition bg-white text-esp-purple shadow-sm"
-        : "py-2.5 rounded-lg text-xs font-bold text-gray-600 transition hover:bg-white/40";
-      document.getElementById('role-per').className = !isEtu
-        ? "py-2.5 rounded-lg text-xs font-bold transition bg-white text-esp-purple shadow-sm"
-        : "py-2.5 rounded-lg text-xs font-bold text-gray-600 transition hover:bg-white/40";
+      document.getElementById('role-etu').className = isEtu ?
+        "py-2.5 rounded-lg text-xs font-bold transition bg-white text-esp-purple shadow-sm" :
+        "py-2.5 rounded-lg text-xs font-bold text-gray-600 transition hover:bg-white/40";
+      document.getElementById('role-per').className = !isEtu ?
+        "py-2.5 rounded-lg text-xs font-bold transition bg-white text-esp-purple shadow-sm" :
+        "py-2.5 rounded-lg text-xs font-bold text-gray-600 transition hover:bg-white/40";
 
       document.getElementById('fields-etudiant').classList.toggle('hidden', !isEtu);
       document.getElementById('fields-etudiant').classList.toggle('block', isEtu);
@@ -283,21 +312,31 @@ if (isset($_SESSION['matricule_user'])) {
       let password = document.getElementById("login-password").value;
 
       fetch("./Gestionnaire/controllers/login.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: "email=" + encodeURIComponent(email) + "&password=" + encodeURIComponent(password),
-      })
-      .then(response => response.text())
-      .then(data => {
-        switch (data) {
-          case '1': window.location.href = "./Etudiant_Personnel/dashboard_etd.php"; break;
-          case '2': window.location.href = "./Gestionnaire/DashboardGestionnaire.php"; break;
-          case '3': window.location.href = "./Admin/admin/dashboard.php"; break;
-        }
-        if (data != "succes") {
-          document.getElementById("message").innerText = data;
-        }
-      });
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: "email=" + encodeURIComponent(email) + "&password=" + encodeURIComponent(password),
+        })
+        .then(response => response.text())
+        .then(data => {
+          switch (data) {
+            case '0':
+              window.location.href = "./Etudiant_Personnel/dashboard_etd.php";
+            case '1':
+              window.location.href = "./Etudiant_Personnel/dashboard_etd.php";
+              break;
+            case '2':
+              window.location.href = "./Gestionnaire/DashboardGestionnaire.php";
+              break;
+            case '3':
+              window.location.href = "./Admin/admin/dashboard.php";
+              break;
+          }
+          if (data != "succes") {
+            document.getElementById("message").innerHTML = data;
+          }
+        });
     });
 
     async function handleRegister(e) {
@@ -317,7 +356,9 @@ if (isset($_SESSION['matricule_user'])) {
 
       const res = await fetch('./Etudiant_Personnel/api_register.php', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify(data)
       });
       const result = await res.json();
@@ -326,4 +367,5 @@ if (isset($_SESSION['matricule_user'])) {
     }
   </script>
 </body>
+
 </html>

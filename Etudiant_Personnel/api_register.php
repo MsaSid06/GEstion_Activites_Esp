@@ -1,7 +1,14 @@
 <?php
+
 // api_register.php
 header('Content-Type: application/json');
-require_once 'db.php';
+require_once '../Gestionnaire/config/connexion.php';
+
+require_once '../Gestionnaire/models/etudiant.php';
+require_once '../Gestionnaire/models/personnel.php';
+require_once '../Gestionnaire/models/utilisateur.php';
+
+$pdo = connexionBD();
 
 $input = json_decode(file_get_contents('php://input'), true);
 
@@ -27,60 +34,64 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 }
 
 try {
-    $pdo->beginTransaction();
 
     // Génération du matricule unique par préfixe
-    $prefixe = ($profil === 'ETUDIANT') ? 'ETU' : 'PER';
+    $pdo->beginTransaction();
+    $sql = "SELECT matricule_user
+        FROM utilisateur
+        ORDER BY matricule_user DESC
+        LIMIT 1";
 
-    $stmt = $pdo->prepare("SELECT COUNT(*) AS total FROM UTILISATEUR WHERE matricule_user LIKE :prefixe");
-    $stmt->execute([':prefixe' => $prefixe . '%']);
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    $prochainNumero = str_pad($row['total'] + 1, 2, '0', STR_PAD_LEFT);
-// → donne ETU01, ETU02, PER01, PER02...
-    $matricule = $prefixe . $prochainNumero;
+    $stmt = $pdo->query($sql);
+    $dernierMatricule = $stmt->fetchColumn();
+    if (!$dernierMatricule) {
+        $matricule = "U001";
+    } else {
+        $numero = (int) substr($dernierMatricule, 1);
+        $numero++;
 
-    // Vérifier que le matricule n'existe pas déjà
-    $check = $pdo->prepare("SELECT COUNT(*) FROM UTILISATEUR WHERE matricule_user = :matricule");
-    $check->execute([':matricule' => $matricule]);
-    if ($check->fetchColumn() > 0) {
-        $maxStmt = $pdo->prepare("SELECT MAX(matricule_user) FROM UTILISATEUR WHERE matricule_user LIKE :prefixe");
-        $maxStmt->execute([':prefixe' => $prefixe . '%']);
-        $maxMatricule = $maxStmt->fetchColumn();
-        $dernierNumero = intval(substr($maxMatricule, strlen($prefixe)));
-        $matricule = $prefixe . str_pad($dernierNumero + 1, 4, '0', STR_PAD_LEFT);
+        $matricule = "U" . str_pad($numero, 3, "0", STR_PAD_LEFT);
     }
 
-    $hashedPassword = password_hash($mot_de_passe, PASSWORD_BCRYPT);
+    $mot_de_passe = password_hash($mot_de_passe,PASSWORD_DEFAULT);
 
-    $sql = "INSERT INTO UTILISATEUR (matricule_user, nom, prenom, email, tel, mot_de_passe, profil, filiere, niveau, poste, specialite) 
-            VALUES (:matricule, :nom, :prenom, :email, :tel, :password, :profil, :filiere, :niveau, :poste, :specialite)";
+    if ($profil === "ETUDIANT") {
 
-    $insertStmt = $pdo->prepare($sql);
-    $insertStmt->execute([
-        ':matricule' => $matricule,
-        ':nom'       => $nom,
-        ':prenom'    => $prenom,
-        ':email'     => $email,
-        ':tel'       => $tel,
-        ':password'  => $hashedPassword,
-        ':profil'    => $profil,
-        ':filiere'   => $filiere,
-        ':niveau'    => $niveau,
-        ':poste'     => $poste,
-        ':specialite'=> $specialite
-    ]);
+        $user =  creerUtilisateur($pdo, $matricule, $nom, $prenom, $email, $tel, $mot_de_passe, $profil, 1);
+        $etd =  creerEtudiant($pdo, $matricule, $filiere, $niveau);
+        if ($etd && $user) {
+            echo json_encode([
+                 "success" => true,
+                 "message" => "Inscription réussie ! Votre matricule est : $matricule"
+             ]);
+        } else {
+            echo json_encode([
+                 "success" => false,
+                 "message" => "Veuillez saisir les bonnes valeures"
+             ]);
 
-    $pdo->commit();
+        }
+    } else {
 
-    echo json_encode([
-        "success" => true,
-        "message" => "Inscription réussie ! Votre matricule est : $matricule"
-    ]);
+        $user =  creerUtilisateur($pdo, $matricule, $nom, $prenom, $email, $tel, $mot_de_passe, $profil, 1);
+        $etd =  creerPersonnel($pdo, $matricule, $poste, $specialite);
+        if ($etd && $user) {
+            echo json_encode([
+                 "success" => true,
+                 "message" => "Inscription réussie ! Votre matricule est : $matricule"
+             ]);
+        } else {
+            echo json_encode([
+                 "success" => false,
+                 "message" => "Veuillez saisir les bonnes valeures"
+             ]);
 
+        }
+
+    }$pdo->commit();
 } catch (Exception $e) {
     if ($pdo->inTransaction()) {
         $pdo->rollBack();
     }
     echo json_encode(["error" => "Erreur lors de l'inscription : " . $e->getMessage()]);
 }
-?>

@@ -11,7 +11,7 @@ require_once __DIR__ . "/../config/database.php";
 
 // exiger_profil(['ADMIN']);
 if (!isset($_SESSION['matricule_user'])) {
-    header("Location: /GestionDesActiviteEsp/index.php");
+    header("Location: ../../index.php");
     exit;
 }
 $chartLabels = [];
@@ -29,12 +29,13 @@ $nb_structures    = (int) $pdo->query('SELECT COUNT(*) FROM STRUCTURE')->fetchCo
 $notif_count      = (int) $pdo->query('SELECT COUNT(*) FROM NOTIFICATION')->fetchColumn();
 
 /* ---------- Activités par structure ----------
-   La structure d'une activité est déduite de la structure de son créateur
-   (gestionnaire), via la table GESTIONNAIRE. */
+   La structure d'une activité est déduite de la structure de rattachement
+   de son créateur (table APPARTENIR), que tout utilisateur possède. Cela
+   garantit que chaque activité est comptée, une seule fois, sous sa structure. */
 $sqlChart = "SELECT s.nom_struct AS nom, COUNT(DISTINCT a.id_act) AS nb
              FROM STRUCTURE s
-             LEFT JOIN GESTIONNAIRE g ON g.id_struct = s.id_struct
-             LEFT JOIN ACTIVITE a     ON a.matricule_user = g.matricule_user
+             LEFT JOIN APPARTENIR ap ON ap.id_struct = s.id_struct
+             LEFT JOIN ACTIVITE a     ON a.matricule_user = ap.matricule_user
              GROUP BY s.id_struct, s.nom_struct
              ORDER BY s.nom_struct";
 $chartRows = $pdo->query($sqlChart)->fetchAll();
@@ -45,8 +46,8 @@ $chartValues = array_map(fn ($r) => (int) $r['nb'], $chartRows);
 /* ---------- Activités récentes ---------- */
 $sqlRecent = "SELECT a.id_act, a.titre, a.date_debut, a.date_fin,
                 (SELECT s.nom_struct
-                   FROM GESTIONNAIRE g JOIN STRUCTURE s ON s.id_struct = g.id_struct
-                  WHERE g.matricule_user = a.matricule_user LIMIT 1) AS departement
+                   FROM APPARTENIR ap JOIN STRUCTURE s ON s.id_struct = ap.id_struct
+                  WHERE ap.matricule_user = a.matricule_user LIMIT 1) AS departement
               FROM ACTIVITE a
               ORDER BY a.date_debut DESC
               LIMIT 6";

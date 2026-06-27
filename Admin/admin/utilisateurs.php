@@ -7,6 +7,8 @@
 
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../../Gestionnaire/models/utilisateur.php';
+require_once __DIR__ . '/../../Gestionnaire/models/appartenir.php';
 
 // exiger_profil(['ADMIN']);
 
@@ -23,14 +25,21 @@ $ROLES = [
  */
 function generer_matricule(PDO $pdo): string
 {
-    $dernier = $pdo->query(
-        "SELECT matricule_user FROM UTILISATEUR
-         WHERE matricule_user REGEXP '^U[0-9]+$'
-         ORDER BY CAST(SUBSTRING(matricule_user, 2) AS UNSIGNED) DESC LIMIT 1"
-    )->fetchColumn();
+    // Algorithme fourni : on prend le dernier matricule (tri decroissant) puis on
+    // incremente. Le format U + 3 chiffres rend le tri alphabetique == tri numerique.
+    $sql = "SELECT matricule_user
+            FROM UTILISATEUR
+            ORDER BY matricule_user DESC
+            LIMIT 1";
+    $dernierMatricule = $pdo->query($sql)->fetchColumn();
 
-    $n = $dernier ? ((int) substr($dernier, 1)) + 1 : 1;
-    return 'U' . str_pad((string) $n, 3, '0', STR_PAD_LEFT);
+    if (!$dernierMatricule) {
+        return 'U001';
+    }
+
+    $numero = (int) substr($dernierMatricule, 1);
+    $numero++;
+    return 'U' . str_pad((string) $numero, 3, '0', STR_PAD_LEFT);
 }
 
 $mode   = 'liste';
@@ -47,11 +56,9 @@ if (is_post()) {
         if ($matricule === $user['matricule']) {
             set_flash('erreur', 'Vous ne pouvez pas supprimer votre propre compte.');
         } else {
-            try {
-                $stmt = $pdo->prepare('DELETE FROM UTILISATEUR WHERE matricule_user = :m');
-                $stmt->execute([':m' => $matricule]);
+            if (supprimerUtilisateur($pdo, $matricule)) {
                 set_flash('succes', 'Compte supprimé.');
-            } catch (PDOException $e) {
+            } else {
                 set_flash('erreur', 'Suppression impossible : cet utilisateur a des activités ou notifications associées.');
             }
         }
@@ -111,61 +118,80 @@ if (is_post()) {
 
             try {
                 $pdo->beginTransaction();
+                $ok  = true;
+                $tmp = null;
 
                 if ($form_action === 'creer') {
+                    // Matricule généré automatiquement (U001, U002, ...).
                     $matricule = generer_matricule($pdo);
-                    $tmp       = 'Esp' . random_int(1000, 9999);
-                    $hash      = password_hash($tmp, PASSWORD_DEFAULT);
+                    // Mot de passe provisoire EN CLAIR : le modèle se charge du hachage.
+                    $tmp = 'Esp' . random_int(1000, 9999);
 
-                    $stmt = $pdo->prepare(
-                        'INSERT INTO UTILISATEUR (matricule_user, nom, prenom, email, tel, mot_de_passe, profil, niveau_acces)
-                         VALUES (:m, :nom, :prenom, :email, NULL, :mdp, :profil, :niv)'
+                    $ok = creerUtilisateur(
+                        $pdo,
+                        $matricule,
+                        $old['nom'],
+                        $old['prenom'],
+                        $old['email'],
+                        null,         // tel
+                        $tmp,         // mot de passe en clair -> haché par le modèle
+                        $old['role'],
+                        $niveau
                     );
-                    $stmt->execute([
-                        ':m' => $matricule, ':nom' => $old['nom'], ':prenom' => $old['prenom'],
-                        ':email' => $old['email'], ':mdp' => $hash, ':profil' => $old['role'], ':niv' => $niveau,
-                    ]);
                 } else {
                     $matricule = $old['matricule'];
-                    $stmt = $pdo->prepare(
-                        'UPDATE UTILISATEUR SET nom = :nom, prenom = :prenom, email = :email,
-                         profil = :profil, niveau_acces = :niv WHERE matricule_user = :m'
+                    // On conserve le téléphone existant (le formulaire ne le gère pas).
+                    $courant = getUtilisateurParMatricule($pdo, $matricule);
+                    $tel     = $courant['tel'] ?? null;
+
+                    $ok = modifierUtilisateur(
+                        $pdo,
+                        $matricule,
+                        $old['nom'],
+                        $old['prenom'],
+                        $old['email'],
+                        $tel,
+                        $old['role'],
+                        $niveau
                     );
-                    $stmt->execute([
-                        ':nom' => $old['nom'], ':prenom' => $old['prenom'], ':email' => $old['email'],
-                        ':profil' => $old['role'], ':niv' => $niveau, ':m' => $matricule,
-                    ]);
                 }
 
                 // Rattachement à un département (table APPARTENIR) : une seule appartenance.
-                $pdo->prepare('DELETE FROM APPARTENIR WHERE matricule_user = :m')->execute([':m' => $matricule]);
-                $pdo->prepare('INSERT INTO APPARTENIR (id_struct, matricule_user) VALUES (:s, :m)')
-                    ->execute([':s' => $old['id_struct'], ':m' => $matricule]);
+                // Le modèle appartenir n'offre pas de suppression par matricule : on vide
+                // l'appartenance existante puis on en crée une via creerAppartenance().
+                if ($ok) {
+                    $pdo->prepare('DELETE FROM APPARTENIR WHERE matricule_user = :m')->execute([':m' => $matricule]);
+                    $ok = creerAppartenance($pdo, $matricule, $old['id_struct']) !== false;
+                }
 
                 // Rôle gestionnaire : (re)synchronise la table GESTIONNAIRE.
-                $pdo->prepare('DELETE FROM GESTIONNAIRE WHERE matricule_user = :m')->execute([':m' => $matricule]);
-                if ($old['role'] === 'GESTIONNAIRE') {
-                    $pdo->prepare('INSERT INTO GESTIONNAIRE (matricule_user, id_struct) VALUES (:m, :s)')
-                        ->execute([':m' => $matricule, ':s' => $old['id_struct']]);
+                // (Aucun modèle dédié à GESTIONNAIRE dans /models, d'où le SQL direct.)
+                if ($ok) {
+                    $pdo->prepare('DELETE FROM GESTIONNAIRE WHERE matricule_user = :m')->execute([':m' => $matricule]);
+                    if ($old['role'] === 'GESTIONNAIRE') {
+                        $ok = $pdo->prepare('INSERT INTO GESTIONNAIRE (matricule_user, id_struct) VALUES (:m, :s)')
+                                  ->execute([':m' => $matricule, ':s' => $old['id_struct']]);
+                    }
                 }
 
-                // Rôle administrateur : (re)synchronise la table ADMINISTRATEUR.
-                $pdo->prepare('DELETE FROM ADMINISTRATEUR WHERE matricule_user = :m')->execute([':m' => $matricule]);
-                if ($old['role'] === 'ADMIN') {
-                    $pdo->prepare('INSERT INTO ADMINISTRATEUR (matricule_user) VALUES (:m)')->execute([':m' => $matricule]);
-                }
-
-                $pdo->commit();
-
-                if ($form_action === 'creer') {
-                    set_flash('succes', "Compte créé — matricule : {$matricule} · mot de passe provisoire : {$tmp} (à communiquer à l'utilisateur).");
+                if ($ok) {
+                    $pdo->commit();
+                    if ($form_action === 'creer') {
+                        set_flash('succes', "Compte créé — matricule : {$matricule} · mot de passe provisoire : {$tmp} (à communiquer à l'utilisateur).");
+                    } else {
+                        set_flash('succes', 'Compte mis à jour.');
+                    }
+                    redirect('utilisateurs.php');
                 } else {
-                    set_flash('succes', 'Compte mis à jour.');
+                    $pdo->rollBack();
+                    $errors['global'] = "Erreur lors de l'enregistrement. Vérifie l'unicité de l'email et la structure choisie.";
+                    $mode = $form_action === 'creer' ? 'nouveau' : 'modifier';
                 }
-                redirect('utilisateurs.php');
             } catch (PDOException $e) {
-                $pdo->rollBack();
-                $errors['global'] = "Erreur lors de l'enregistrement. Vérifie que la base est à jour (table APPARTENIR).";
+                if ($pdo->inTransaction()) {
+                    $pdo->rollBack();
+                }
+                $errors['global'] = "Erreur lors de l'enregistrement.";
                 $mode = $form_action === 'creer' ? 'nouveau' : 'modifier';
             }
         } else {

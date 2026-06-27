@@ -7,6 +7,8 @@
 
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../../Gestionnaire/models/utilisateur.php';
+require_once __DIR__ . '/../../Gestionnaire/models/appartenir.php';
 
 // exiger_profil(['ADMIN']);
 
@@ -32,13 +34,34 @@ if (is_post()) {
         } else {
             try {
                 $pdo->beginTransaction();
+
+                // Plus de structure gérée (pas de modèle GESTIONNAIRE -> SQL direct).
                 $pdo->prepare('DELETE FROM GESTIONNAIRE WHERE matricule_user = :m')->execute([':m' => $matricule]);
-                $pdo->prepare("UPDATE UTILISATEUR SET profil = 'PERSONNEL', niveau_acces = 0 WHERE matricule_user = :m")
-                    ->execute([':m' => $matricule]);
-                $pdo->commit();
-                set_flash('succes', 'Rôle de gestionnaire retiré.');
+
+                // Rétrograde le compte en PERSONNEL via le modèle (on conserve ses infos).
+                $u  = getUtilisateurParMatricule($pdo, $matricule);
+                $ok = $u && modifierUtilisateur(
+                    $pdo,
+                    $matricule,
+                    $u['nom'],
+                    $u['prenom'],
+                    $u['email'],
+                    $u['tel'] ?? null,
+                    'PERSONNEL',
+                    0
+                );
+
+                if ($ok) {
+                    $pdo->commit();
+                    set_flash('succes', 'Rôle de gestionnaire retiré.');
+                } else {
+                    $pdo->rollBack();
+                    set_flash('erreur', 'Impossible de retirer le rôle pour cet utilisateur.');
+                }
             } catch (PDOException $e) {
-                $pdo->rollBack();
+                if ($pdo->inTransaction()) {
+                    $pdo->rollBack();
+                }
                 set_flash('erreur', 'Impossible de retirer le rôle pour cet utilisateur.');
             }
         }
@@ -98,32 +121,46 @@ if (is_post()) {
             try {
                 $pdo->beginTransaction();
 
-                $pdo->prepare(
-                    "UPDATE UTILISATEUR SET nom = :nom, prenom = :prenom, email = :email,
-                     profil = 'GESTIONNAIRE', niveau_acces = :niv WHERE matricule_user = :m"
-                )->execute([
-                    ':nom' => $old['nom'], ':prenom' => $old['prenom'], ':email' => $old['email'],
-                    ':niv' => $niveau, ':m' => $old['matricule'],
-                ]);
+                // Promotion en GESTIONNAIRE via le modèle (on conserve le téléphone existant).
+                $courant = getUtilisateurParMatricule($pdo, $old['matricule']);
+                $tel     = $courant['tel'] ?? null;
+                $ok = modifierUtilisateur(
+                    $pdo,
+                    $old['matricule'],
+                    $old['nom'],
+                    $old['prenom'],
+                    $old['email'],
+                    $tel,
+                    'GESTIONNAIRE',
+                    $niveau
+                );
 
-                // Ne peut plus être administrateur s'il devient gestionnaire.
-                $pdo->prepare('DELETE FROM ADMINISTRATEUR WHERE matricule_user = :m')->execute([':m' => $old['matricule']]);
+                // Rattachement au département (table APPARTENIR) via le modèle.
+                if ($ok) {
+                    $pdo->prepare('DELETE FROM APPARTENIR WHERE matricule_user = :m')->execute([':m' => $old['matricule']]);
+                    $ok = creerAppartenance($pdo, $old['matricule'], $old['id_struct']) !== false;
+                }
 
-                // Rattachement au département.
-                $pdo->prepare('DELETE FROM APPARTENIR WHERE matricule_user = :m')->execute([':m' => $old['matricule']]);
-                $pdo->prepare('INSERT INTO APPARTENIR (id_struct, matricule_user) VALUES (:s, :m)')
-                    ->execute([':s' => $old['id_struct'], ':m' => $old['matricule']]);
+                // Structure gérée (pas de modèle GESTIONNAIRE -> SQL direct).
+                if ($ok) {
+                    $pdo->prepare('DELETE FROM GESTIONNAIRE WHERE matricule_user = :m')->execute([':m' => $old['matricule']]);
+                    $ok = $pdo->prepare('INSERT INTO GESTIONNAIRE (matricule_user, id_struct) VALUES (:m, :s)')
+                              ->execute([':m' => $old['matricule'], ':s' => $old['id_struct']]);
+                }
 
-                // Structure gérée.
-                $pdo->prepare('DELETE FROM GESTIONNAIRE WHERE matricule_user = :m')->execute([':m' => $old['matricule']]);
-                $pdo->prepare('INSERT INTO GESTIONNAIRE (matricule_user, id_struct) VALUES (:m, :s)')
-                    ->execute([':m' => $old['matricule'], ':s' => $old['id_struct']]);
-
-                $pdo->commit();
-                set_flash('succes', $form_action === 'attribuer' ? 'Rôle de gestionnaire attribué.' : 'Gestionnaire mis à jour.');
-                redirect('gestionnaires.php');
+                if ($ok) {
+                    $pdo->commit();
+                    set_flash('succes', $form_action === 'attribuer' ? 'Rôle de gestionnaire attribué.' : 'Gestionnaire mis à jour.');
+                    redirect('gestionnaires.php');
+                } else {
+                    $pdo->rollBack();
+                    $errors['global'] = "Erreur lors de l'enregistrement.";
+                    $mode = $form_action === 'attribuer' ? 'attribuer' : 'modifier';
+                }
             } catch (PDOException $e) {
-                $pdo->rollBack();
+                if ($pdo->inTransaction()) {
+                    $pdo->rollBack();
+                }
                 $errors['global'] = "Erreur lors de l'enregistrement.";
                 $mode = $form_action === 'attribuer' ? 'attribuer' : 'modifier';
             }

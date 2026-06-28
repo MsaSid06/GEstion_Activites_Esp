@@ -15,7 +15,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
-  background: rgb(101, 6, 101);
+  background: #650665;
   color: white;
 }
 
@@ -218,81 +218,6 @@ body {
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* .nav-item {
-  font-size: 18px;
-  cursor: pointer;
-  opacity: 0.6;
-}
-
-.nav-item.active {
-  opacity: 1;
-}
-
-.center {
-  background: #0047ab;
-  color: white;
-  width: 35px;
-  height: 35px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
-}
-
-.tout {
-  margin-left: 400px;
-}
-.calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
-}
-
-.day {
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: white;
-  border-radius: 10px;
-  border: 1px solid #eee;
-  font-weight: 500;
-}
-
-.upcoming {
-  background: #dbeafe;
-  color: #2563eb;
-}
-.ongoing {
-  background: #ffedd5;
-  color: #ea580c;
-}
-.done {
-  background: #dcfce7;
-  color: #16a34a;
-}
-
-.legend {
-  margin-top: 10px;
-}
-
-.dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  display: inline-block;
-  margin-right: 5px;
-}
-
-.blue {
-  background: #3b82f6;
-}
-.orange {
-  background: #f97316;
-}
-.green {
-  background: #22c55e;
-} */
 .dot.gray {
   background: #777;
 }
@@ -304,21 +229,30 @@ body {
   background: #16a34a;
 }
 
-/* Coloration des jours du calendrier selon le statut de l'activité */
-.day.upcoming {
-  background: #dbeafe;
+.calendar-grid .day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 50px;
+  /* aspect-ratio: 1; */
+  border-radius: 8px;
+}
+
+.calendar-grid .day.upcoming {
+  background-color: #dbeafe; /* bleu clair */
   color: #2563eb;
   font-weight: 600;
 }
 
-.day.ongoing {
-  background: #ffedd5;
+.calendar-grid .day.ongoing {
+  background-color: #ffedd5; /* orange clair */
   color: #ea580c;
   font-weight: 600;
 }
 
-.day.done {
-  background: #dcfce7;
+.calendar-grid .day.done {
+  background-color: #dcfce7; /* vert clair */
   color: #16a34a;
   font-weight: 600;
 }

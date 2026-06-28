@@ -129,6 +129,14 @@ $activites = getToutesActivitesGestionnaire($pdo, $_SESSION["matricule_user"]);
                     <?= htmlspecialchars($a['date_debut']) ?>
 
                 </p>
+                <p class="text-sm text-gray-600 flex items-center gap-2 mb-2">
+
+                    <i class="fa-solid fa-clock text-gray-400"></i>
+
+                    Fin :
+                    <?= htmlspecialchars($a['date_fin']) ?>
+
+                </p>
 
                 <!-- LIEU -->
                 <p class="text-sm text-gray-600 flex items-center gap-2 mb-4">

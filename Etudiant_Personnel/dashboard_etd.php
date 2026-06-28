@@ -341,20 +341,15 @@ $notifications = getAllNotifications($pdo);
                 class="relative flex items-center justify-center cursor-pointer">
                 <div id="dock-avatar"
                     class="w-8 h-8 bg-[#322336] text-[#A697A8] text-xs font-bold rounded-full flex items-center justify-center border border-purple-800/40">
-<<<<<<< HEAD
-                    MC</div>
+                    <?= strtoupper($_SESSION['nom'][0]). strtoupper($_SESSION['prenom'][0]) ?>
+                </div>
                 <span
                     class="absolute bottom-0 right-0 w-2 h-2 bg-[#D4AF37] rounded-full border border-[#650665]"></span>
             </a>
-=======
-                    <?= strtoupper($_SESSION['nom'][0]). strtoupper($_SESSION['prenom'][0]) ?>
-                </div>
-                <span class="absolute bottom-0 right-0 w-2 h-2 bg-[#D4AF37] rounded-full border border-[#4A0E4E]">
-
-                </span>
-            </div>
->>>>>>> 63352a998099e22c60e7f6c1669133a57d27cee0
         </div>
+
+    </div>
+    </div>
     </div>
 
 </body>

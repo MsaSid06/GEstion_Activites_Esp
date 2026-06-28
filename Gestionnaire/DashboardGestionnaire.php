@@ -206,11 +206,6 @@ foreach ($activites as $a) {
                         <small class="text-gray-500">Activités du mois</small>
                     </div>
 
-                    <div class="flex gap-2">
-                        <button id="prev" class="px-3 py-1 bg-gray-200 rounded">‹</button>
-                        <button id="next" class="px-3 py-1 bg-gray-200 rounded">›</button>
-                    </div>
-
                 </div>
 
                 <!-- CALENDRIER -->
@@ -348,6 +343,9 @@ foreach ($activites as $a) {
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
 
+            const now = new Date();
+            now.setHours(0, 0, 0, 0);
+
             for (let i = 0; i < firstDay; i++) {
                 calendar.innerHTML += `<div></div>`;
             }
@@ -355,37 +353,35 @@ foreach ($activites as $a) {
             for (let day = 1; day <= daysInMonth; day++) {
 
                 const cellDate = new Date(year, month, day);
+                cellDate.setHours(0, 0, 0, 0);
 
-                let className = "day";
+                let dayStatus = ""; // pas d'activité qui commence ce jour-là
 
                 events.forEach(e => {
 
                     const start = new Date(e.start);
                     const end = new Date(e.end);
+                    start.setHours(0, 0, 0, 0);
+                    end.setHours(0, 0, 0, 0);
 
-                    if (cellDate >= start && cellDate <= end) {
+                    // On ne colore QUE la cellule du jour de début de l'activité
+                    if (cellDate.getTime() === start.getTime()) {
 
-                        const now = new Date();
-
-                        if (now < start) className += " upcoming";
-                        else if (now >= start && now <= end) className += " ongoing";
-                        else className += " done";
+                        if (start <= now) {
+                            if (end < now) {
+                                dayStatus = "done"; // Terminée (vert)
+                            } else {
+                                dayStatus = "ongoing"; // En cours (orange)
+                            }
+                        } else {
+                            dayStatus = "upcoming"; // À venir (bleu)
+                        }
                     }
                 });
 
-                calendar.innerHTML += `<div class="${className}">${day}</div>`;
+                calendar.innerHTML += `<div class="day ${dayStatus}">${day}</div>`;
             }
         }
-
-        document.getElementById("prev").onclick = () => {
-            currentDate.setMonth(currentDate.getMonth() - 1);
-            renderCalendar();
-        };
-
-        document.getElementById("next").onclick = () => {
-            currentDate.setMonth(currentDate.getMonth() + 1);
-            renderCalendar();
-        };
 
         renderCalendar();
     </script>

@@ -346,14 +346,14 @@ $notifications = getAllNotifications($pdo);
                 <span
                     class="absolute bottom-0 right-0 w-2 h-2 bg-[#D4AF37] rounded-full border border-[#650665]"></span>
             </a>
-=======
+
                     <?= strtoupper($_SESSION['nom'][0]). strtoupper($_SESSION['prenom'][0]) ?>
                 </div>
                 <span class="absolute bottom-0 right-0 w-2 h-2 bg-[#D4AF37] rounded-full border border-[#4A0E4E]">
 
                 </span>
             </div>
->>>>>>> 63352a998099e22c60e7f6c1669133a57d27cee0
+
         </div>
     </div>
 

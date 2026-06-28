@@ -6,9 +6,6 @@ if (!isset($_SESSION['matricule_user'])) {
     header("Location: ../index.php");
     exit;
 }
-$pdo = connexionBD();
-$notifications = getAllNotifications($pdo);
-// $activites = getToutesActivites($pdo);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -16,21 +13,19 @@ $notifications = getAllNotifications($pdo);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESP Dakar - Tableau de bord
-        <?=  ($_SESSION['profil'] === 'ETUDIANT') ? "ETUDIANT" : "PERSONNEL";  ?>
-    </title>
+    <title>ESP Dakar - Application</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .bg-esp-purple {
-            background-color: #650665;
+            background-color: #4A0E4E;
         }
 
         .text-esp-purple {
-            color: #650665;
+            color: #4A0E4E;
         }
 
         .border-esp-purple {
-            border-color: #650665;
+            border-color: #4A0E4E;
         }
 
         .bg-esp-gold {
@@ -43,7 +38,7 @@ $notifications = getAllNotifications($pdo);
 
         .btn-details-light {
             background-color: #F3EBF4;
-            color: #650665;
+            color: #4A0E4E;
         }
 
         .custom-scrollbar::-webkit-scrollbar {
@@ -70,11 +65,9 @@ $notifications = getAllNotifications($pdo);
                 class="w-10 h-10 bg-esp-purple rounded-full flex items-center justify-center text-white font-black text-xs tracking-wider">
                 ESP</div>
             <div>
-                <h1 class="text-sm font-bold text-gray-900">
-                    <?= strtoupper($_SESSION['nom']) . ' ' . strtoupper($_SESSION['prenom'])?>
-                </h1>
+                <h1 class="text-sm font-bold text-gray-900">ESP Dakar</h1>
                 <p id="user-full-name" class="text-xs text-gray-500 font-medium">
-                    <?= strtoupper($_SESSION['profil'])."(E)"?>
+                    <?= ucfirst(strtolower($_SESSION['prenom'])) . ' ' . ucfirst(strtolower($_SESSION['nom'])) . ' (' . ucfirst(strtolower($_SESSION['profil'])) . ')' ?>
                 </p>
             </div>
         </div>
@@ -94,23 +87,11 @@ $notifications = getAllNotifications($pdo);
                 class="absolute right-0 top-10 bg-white border border-gray-100 w-80 rounded-2xl shadow-xl p-4 hidden space-y-3 z-50">
                 <div class="flex justify-between items-center border-b pb-2">
                     <span class="font-bold text-sm text-gray-800">Notifications</span>
-                    <a href="./notifications.php" class="text-xs text-esp-purple font-semibold hover:underline">Voir
-                        tout</a>
+                    <button onclick="clearNotifications()"
+                        class="text-xs text-esp-purple font-semibold hover:underline">Tout marquer lu</button>
                 </div>
-                <div id="notif-list" class="space-y-2.5 max-h-60 overflow-y-auto text-xs custom-scrollbar pr-1">'
-                    <?php foreach ($notifications as $n) {
-                    }?>
-                    <div class="p-2 bg-purple-50 rounded-xl border border-purple-100/50">
-                        <p class="text-gray-800 font-medium">
-                            <?=  $n['message']?>
-                        </p>
-                        <span
-                            class="text-gray-400 text-[10px]"><?=  $n['date_envoi']?></span>
-                    </div>
-
-                </div>
+                <div id="notif-list" class="space-y-2.5 max-h-60 overflow-y-auto text-xs custom-scrollbar pr-1"></div>
             </div>
-
 
             <a href="/GestionDesActiviteEsp/Gestionnaire/controllers/logout.php"
                 class="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-red-600 transition">
@@ -120,7 +101,6 @@ $notifications = getAllNotifications($pdo);
                         d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
                 </svg>
                 <span class="hidden sm:inline">Déconnexion</span>
-
             </a>
         </div>
     </header>
@@ -237,7 +217,7 @@ $notifications = getAllNotifications($pdo);
                 <div class="md:col-span-4">
                     <select onchange="filterDepartment(this.value)"
                         class="w-full px-4 py-3 bg-[#EFE5F0] text-gray-800 font-semibold rounded-xl text-sm outline-none border-none cursor-pointer">
-                        <option value="ALL">Tous les départements</option>
+                        <option value="ALL">Tous les Départements</option>
                         <option value="Direction Générale">Direction Générale</option>
                         <option value="Génie Civil">Génie Civil</option>
                         <option value="Informatique">Informatique</option>
@@ -275,7 +255,7 @@ $notifications = getAllNotifications($pdo);
                             class="bg-white/20 backdrop-blur-md text-white font-semibold text-xs px-3 py-1 rounded-full flex items-center gap-1.5">
                             <span class="w-2 h-2 rounded-full bg-white"></span> <span id="det-badge-text">Statut</span>
                         </span>
-                        <span id="det-dept" class="text-white/60 text-xs font-medium tracking-wide">Département</span>
+                        <span id="det-dept" class="text-white/60 text-xs font-medium tracking-wide">Type</span>
                     </div>
                     <h2 id="det-title" class="text-2xl md:text-3xl font-black tracking-tight">Titre de l'activité</h2>
                 </div>
@@ -301,16 +281,9 @@ $notifications = getAllNotifications($pdo);
                             <span id="det-lieu" class="text-sm md:text-base font-bold text-gray-800">-</span>
                         </div>
                         <div class="bg-[#F0E6F0]/60 border border-purple-100/30 p-4 rounded-2xl">
-                            <span class="text-xs font-bold text-purple-400 block mb-0.5">Responsable</span>
-                            <span id="det-responsable" class="text-sm md:text-base font-bold text-gray-800">Non
-                                désigné</span>
+                            <span class="text-xs font-bold text-purple-400 block mb-0.5">Type</span>
+                            <span id="det-type" class="text-sm md:text-base font-bold text-gray-800">-</span>
                         </div>
-                    </div>
-
-                    <div class="bg-[#FFFDF5] border border-amber-200/50 p-5 rounded-2xl space-y-1">
-                        <span class="text-xs font-bold text-amber-600 block">Ressources affectées</span>
-                        <p id="det-ressources" class="text-sm md:text-base font-bold text-gray-800">Salle polyvalente,
-                            matériel pédagogique standard</p>
                     </div>
                 </div>
             </div>
@@ -319,7 +292,7 @@ $notifications = getAllNotifications($pdo);
 
     <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 w-auto max-w-md">
         <div
-            class="bg-[#650665] text-white rounded-full shadow-xl px-4 py-2 flex items-center gap-4 border border-purple-950/40">
+            class="bg-[#4A0E4E] text-white rounded-full shadow-xl px-4 py-2 flex items-center gap-4 border border-purple-950/40">
             <button id="btn-dock-dash" onclick="switchView('dashboard')"
                 class="p-2.5 bg-[#5D1962] rounded-full transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
@@ -345,12 +318,14 @@ $notifications = getAllNotifications($pdo);
                 </div>
                 <span
                     class="absolute bottom-0 right-0 w-2 h-2 bg-[#D4AF37] rounded-full border border-[#650665]"></span>
+
             </a>
         </div>
 
     </div>
     </div>
     </div>
+
 
 </body>
 <script src="./dashboard.js"></script>

@@ -2,11 +2,10 @@
 
 session_start();
 
-define("ROOT", "/GestionDesActiviteEsp");
 
 
-require_once ROOT . '/Gestionnaire/config/connexion.php';
-require_once ROOT .  '/Gestionnaire/models/notifications.php';
+require_once   '../config/connexion.php';
+require_once   '../models/notifications.php';
 
 $pdo = connexionBD();
 

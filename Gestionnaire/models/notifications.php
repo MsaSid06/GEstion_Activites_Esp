@@ -1,14 +1,5 @@
 <?php
-/**
- * includes/notifications.php
- * Récupération des notifications pour le volet de l'en-tête.
- */
 
-// require_once __DIR__ . '/functions.php';
-
-/**
- * Notifications les plus récentes (avec le titre de l'activité liée si présente).
- */
 function notifications_recentes(PDO $pdo, string $matricule): array
 {
     $stmt = $pdo->prepare(
@@ -19,6 +10,17 @@ function notifications_recentes(PDO $pdo, string $matricule): array
          ORDER BY n.date_envoi DESC'
     );
     $stmt->bindValue(':id', $matricule);
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
+function getAllNotifications(PDO $pdo): array
+{
+    $stmt = $pdo->prepare(
+        'SELECT n.id_not, n.message, n.date_envoi, n.id_act, a.titre AS activite
+         FROM NOTIFICATION n
+         LEFT JOIN ACTIVITE a ON a.id_act = n.id_act
+         ORDER BY n.date_envoi DESC'
+    );
     $stmt->execute();
     return $stmt->fetchAll();
 }

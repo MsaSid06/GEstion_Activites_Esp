@@ -8,7 +8,7 @@
  * L'utilisateur peut modifier : prénom, nom, téléphone, mot de passe.
  * L'email n'est PAS modifiable (affiché en lecture seule).
  */
-
+//sessions
 session_start();
 require_once __DIR__ . '/Gestionnaire/models/utilisateur.php'; // charge aussi connexionBD()
 

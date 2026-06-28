@@ -79,6 +79,22 @@ function getToutesActivitesGestionnaire(PDO $pdo, string $gestMat): array
         "SELECT * FROM activite WHERE matricule_user = '$gestMat'"
     )->fetchAll();
 }
+function getDerniereActivite(PDO $pdo, string $gestMat): array|false
+{
+    $stmt = $pdo->prepare("
+        SELECT *
+        FROM activite
+        WHERE matricule_user = :matricule
+        ORDER BY id_act DESC
+        LIMIT 1
+    ");
+
+    $stmt->execute([
+        ':matricule' => $gestMat
+    ]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
 function modifierActivite(
     PDO $pdo,

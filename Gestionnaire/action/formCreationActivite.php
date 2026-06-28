@@ -32,6 +32,7 @@ $old = $old ?? [
     'type_act' => 'AUTRE',
     'date_debut' => '',
     'date_fin' => '',
+    'notif' => "",
     'lieu' => ''
 ];
 
@@ -148,6 +149,12 @@ function e(string $v): string
                     <label class="text-sm font-medium">Description</label>
                     <textarea id="description" name="description" class="w-full border rounded-lg px-3 py-2"
                         rows="4"><?= e($old['description']) ?></textarea>
+                    <span id="err-description" class="text-red-500 text-xs"></span>
+                </div>
+                <div>
+                    <label class="text-sm font-medium">Message de la notification</label>
+                    <textarea id="description" name="notif" class="w-full border rounded-lg px-3 py-2"
+                        rows="4"><?= e($old['notif']) ?></textarea>
                     <span id="err-description" class="text-red-500 text-xs"></span>
                 </div>
 

@@ -243,6 +243,7 @@ foreach ($activites as $a) {
                     </a>
 
                 </h3>
+                <?php if(count($activites) > 0):?>
 
                 <div class="space-y-3">
 
@@ -301,7 +302,16 @@ foreach ($activites as $a) {
                     <?php endforeach; ?>
 
                 </div>
+                <?php  else: ?>
+                <div
+                    class="bg-white p-6 rounded-xl shadow flex items-center gap-2 text-gray-500 hover:-translate-y-1 transition-all duration-300">
+                    <i class="fa-regular fa-folder-open"></i>
+                    Aucune activité disponible.
+                </div>
 
+                <?php endif; ?>
+
+            </div>
             </div>
 
 

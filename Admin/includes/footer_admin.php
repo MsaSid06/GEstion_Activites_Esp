@@ -27,10 +27,11 @@ $onglets = [
         </a>
     <?php endforeach; ?>
     <span class="adm-nav-sep" aria-hidden="true"></span>
-    <span class="adm-nav-avatar" title="<?= e($user['prenom'] . ' ' . $user['nom']) ?>">
+    <a href="/GestionDesActiviteEsp/profil.php" class="adm-nav-avatar" style="text-decoration:none"
+        title="Gestion du profil — <?= e($user['prenom'] . ' ' . $user['nom']) ?>">
         <?= e($initiales) ?>
         <span class="adm-nav-dot" aria-hidden="true"></span>
-    </span>
+    </a>
 </nav>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>

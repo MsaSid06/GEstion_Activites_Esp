@@ -319,13 +319,14 @@ if (!isset($_SESSION['matricule_user'])) {
                 </svg>
             </button>
             <div class="h-6 w-[1px] bg-purple-900/60"></div>
-            <div class="relative flex items-center justify-center">
+            <a href="/GestionDesActiviteEsp/profil.php" title="Gestion du profil"
+                class="relative flex items-center justify-center cursor-pointer">
                 <div id="dock-avatar"
                     class="w-8 h-8 bg-[#322336] text-[#A697A8] text-xs font-bold rounded-full flex items-center justify-center border border-purple-800/40">
                     MC</div>
                 <span
                     class="absolute bottom-0 right-0 w-2 h-2 bg-[#D4AF37] rounded-full border border-[#4A0E4E]"></span>
-            </div>
+            </a>
         </div>
     </div>
 

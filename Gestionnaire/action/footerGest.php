@@ -50,15 +50,16 @@ $page = basename($_SERVER['PHP_SELF']);
         <i class="fa-solid fa-bell text-xl"></i>
     </a>
 
-    <div class="text-white bg-yellow-600
+    <a href="/GestionDesActiviteEsp/profil.php" title="Gestion du profil"
+       class="text-white bg-yellow-600
            -translate-y-3
            shadow-lg
            flex items-center justify-center
            w-12 h-12 rounded-full
-           font-bold
-           cursor-default">
+           font-bold no-underline
+           cursor-pointer">
 
         <?= strtoupper(substr($_SESSION['prenom'], 0, 1)) ?>
 
-    </div>
+    </a>
 </nav>

@@ -90,7 +90,7 @@ if (is_post()) {
                     $slug = preg_replace('/[^a-z0-9]+/', '', strtolower($old['nom']));
                     $base = $slug !== '' ? substr($slug, 0, 36) : ('struct' . $num);
                     $mail = $base . '@esp.sn';
-                    $chk  = $pdo->prepare('SELECT 1 FROM STRUCTURE WHERE mail = :m');
+                    $chk  = $pdo->prepare('SELECT 1 FROM STRUCTURE WHERE email = :m');
                     $chk->execute([':m' => $mail]);
                     if ($chk->fetchColumn()) {
                         $mail = $base . $num . '@esp.sn';
@@ -98,7 +98,7 @@ if (is_post()) {
                     $tel  = '33' . str_pad((string) $num, 7, '0', STR_PAD_LEFT);
 
                     $pdo->prepare(
-                        'INSERT INTO STRUCTURE (id_struct, nom_struct, desc_struct, mail, tel, type_struct)
+                        'INSERT INTO STRUCTURE (id_struct, nom_struct, desc_struct, email, tel, type_struct)
                          VALUES (:id, :nom, NULL, :mail, :tel, :type)'
                     )->execute([':id' => $id, ':nom' => $old['nom'], ':mail' => $mail, ':tel' => $tel, ':type' => $old['type']]);
                 } else {

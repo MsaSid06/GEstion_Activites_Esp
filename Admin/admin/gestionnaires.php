@@ -15,7 +15,7 @@ require_once __DIR__ . '/../../Gestionnaire/models/appartenir.php';
 $user = utilisateur_courant();
 
 // Niveaux d'accès (stockés dans UTILISATEUR.niveau_acces, entier).
-$NIVEAUX = [1 => 'Département', 2 => 'Faculté', 3 => 'Global'];
+$NIVEAUX = [1 => 'Utilisateur', 2 => 'Gestionnaire', 3 => 'Administrateur'];
 $NIVCLS  = [1 => 'niv-dep',    2 => 'niv-fac', 3 => 'niv-glob'];
 
 $mode   = 'liste';
@@ -373,7 +373,7 @@ include __DIR__ . '/../includes/header_admin.php';
                 <?php else: ?>
                 <?php foreach ($gestionnaires as $g):
                     $niv = (int) $g['niveau_acces'];
-                    $nivLib = $NIVEAUX[$niv] ?? 'Département';
+                    $nivLib = $NIVEAUX[$niv] ?? 'Utilisateur';
                     $nivCls = $NIVCLS[$niv] ?? 'niv-dep'; ?>
                 <tr>
                     <td class="td-mat">

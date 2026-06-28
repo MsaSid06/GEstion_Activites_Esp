@@ -72,7 +72,7 @@ function statut_activite(string $debut, string $fin): array
 
 /* ---------- Variables pour le layout ---------- */
 $page_active = 'dashboard';
-$titre       = "Vue d'ensemble";
+$titre       = "Dashboard";
 $sous_titre  = 'Toutes les structures · Année ' . date('Y');
 
 include __DIR__ . '/../includes/header_admin.php';

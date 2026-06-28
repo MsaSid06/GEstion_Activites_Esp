@@ -44,7 +44,7 @@ function generer_matricule(PDO $pdo): string
 
 $mode   = 'liste';
 $errors = [];
-$old    = ['matricule' => '', 'prenom' => '', 'nom' => '', 'email' => '', 'id_struct' => '', 'role' => 'ETUDIANT'];
+$old    = ['matricule' => '', 'prenom' => '', 'nom' => '', 'email' => '', 'tel' => '', 'id_struct' => '', 'role' => 'ETUDIANT'];
 
 /* ============================ Traitements POST ============================ */
 if (is_post()) {
@@ -71,6 +71,7 @@ if (is_post()) {
         $old['prenom']    = post('prenom');
         $old['nom']       = post('nom');
         $old['email']     = post('email');
+        $old['tel']       = post('tel');
         $old['id_struct'] = post('id_struct');
         $old['role']      = post('role');
 
@@ -113,6 +114,25 @@ if (is_post()) {
             }
         }
 
+        // Telephone optionnel ; s'il est renseigne, il doit etre au bon format et unique.
+        if ($old['tel'] !== '') {
+            if (!preg_match('/^[0-9+ ]{6,20}$/', $old['tel'])) {
+                $errors['tel'] = 'Numero de telephone invalide.';
+            } else {
+                $sqlT = 'SELECT 1 FROM UTILISATEUR WHERE tel = :t';
+                $parT = [':t' => $old['tel']];
+                if ($form_action === 'modifier') {
+                    $sqlT .= ' AND matricule_user <> :m';
+                    $parT[':m'] = $old['matricule'];
+                }
+                $stT = $pdo->prepare($sqlT);
+                $stT->execute($parT);
+                if ($stT->fetchColumn()) {
+                    $errors['tel'] = 'Ce numero de telephone est deja utilise.';
+                }
+            }
+        }
+
         if (empty($errors)) {
             $niveau = $old['role'] === 'ADMIN' ? 9 : ($old['role'] === 'GESTIONNAIRE' ? 1 : 0);
 
@@ -120,6 +140,8 @@ if (is_post()) {
                 $pdo->beginTransaction();
                 $ok  = true;
                 $tmp = null;
+                // Telephone : NULL si laisse vide (la colonne tel est nullable).
+                $telVal = ($old['tel'] === '') ? null : $old['tel'];
 
                 if ($form_action === 'creer') {
                     // Matricule généré automatiquement (U001, U002, ...).
@@ -133,16 +155,13 @@ if (is_post()) {
                         $old['nom'],
                         $old['prenom'],
                         $old['email'],
-                        null,         // tel
+                        $telVal,      // tel (NULL si non renseigne)
                         $tmp,         // mot de passe en clair -> haché par le modèle
                         $old['role'],
                         $niveau
                     );
                 } else {
                     $matricule = $old['matricule'];
-                    // On conserve le téléphone existant (le formulaire ne le gère pas).
-                    $courant = getUtilisateurParMatricule($pdo, $matricule);
-                    $tel     = $courant['tel'] ?? null;
 
                     $ok = modifierUtilisateur(
                         $pdo,
@@ -150,7 +169,7 @@ if (is_post()) {
                         $old['nom'],
                         $old['prenom'],
                         $old['email'],
-                        $tel,
+                        $telVal,
                         $old['role'],
                         $niveau
                     );
@@ -207,7 +226,7 @@ if ($mode === 'liste' && $action === 'nouveau') {
 }
 if ($mode === 'liste' && $action === 'modifier') {
     $matricule = $_GET['matricule'] ?? '';
-    $stmt = $pdo->prepare('SELECT matricule_user, nom, prenom, email, profil FROM UTILISATEUR WHERE matricule_user = :m');
+    $stmt = $pdo->prepare('SELECT matricule_user, nom, prenom, email, tel, profil FROM UTILISATEUR WHERE matricule_user = :m');
     $stmt->execute([':m' => $matricule]);
     $u = $stmt->fetch();
     if ($u) {
@@ -218,6 +237,7 @@ if ($mode === 'liste' && $action === 'modifier') {
             'prenom'    => $u['prenom'],
             'nom'       => $u['nom'],
             'email'     => $u['email'],
+            'tel'       => $u['tel'] ?? '',
             'id_struct' => (string) ($struct->fetchColumn() ?: ''),
             'role'      => $u['profil'],
         ];
@@ -233,7 +253,7 @@ $structures = $pdo->query('SELECT id_struct, nom_struct FROM STRUCTURE ORDER BY 
 
 // Liste des comptes + département de chacun.
 $comptes = $pdo->query(
-    "SELECT u.matricule_user, u.nom, u.prenom, u.email, u.profil,
+    "SELECT u.matricule_user, u.nom, u.prenom, u.email, u.tel, u.profil,
             (SELECT s.nom_struct FROM APPARTENIR ap JOIN STRUCTURE s ON s.id_struct = ap.id_struct
               WHERE ap.matricule_user = u.matricule_user LIMIT 1) AS departement
      FROM UTILISATEUR u
@@ -348,14 +368,26 @@ include __DIR__ . '/../includes/header_admin.php';
             </div>
         </div>
 
-        <div class="field field-half">
-            <label class="field-label" for="role">Rôle</label>
-            <select class="input select" id="role" name="role">
-                <?php foreach ($ROLES as $val => $lib): ?>
-                <option value="<?= $val ?>" <?= $old['role'] === $val ? 'selected' : '' ?>><?= $lib ?>
-                </option>
-                <?php endforeach; ?>
-            </select>
+        <div class="grid-2">
+            <div class="field">
+                <label class="field-label" for="role">Rôle</label>
+                <select class="input select" id="role" name="role">
+                    <?php foreach ($ROLES as $val => $lib): ?>
+                    <option value="<?= $val ?>" <?= $old['role'] === $val ? 'selected' : '' ?>><?= $lib ?>
+                    </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="field">
+                <label class="field-label" for="tel">Téléphone (optionnel)</label>
+                <input
+                    class="input <?= isset($errors['tel']) ? 'input-error' : '' ?>"
+                    type="tel" id="tel" name="tel"
+                    value="<?= e($old['tel']) ?>"
+                    placeholder="Ex : 770000000">
+                <?php if (isset($errors['tel'])): ?><span
+                    class="field-msg"><?= e($errors['tel']) ?></span><?php endif; ?>
+            </div>
         </div>
 
         <div class="form-actions">
@@ -377,6 +409,7 @@ include __DIR__ . '/../includes/header_admin.php';
                     <th>Nom</th>
                     <th>Prénom</th>
                     <th>Email</th>
+                    <th>Téléphone</th>
                     <th>Rôle</th>
                     <th>Structure</th>
                     <th class="ta-right">Actions</th>
@@ -385,7 +418,7 @@ include __DIR__ . '/../includes/header_admin.php';
             <tbody>
                 <?php if (empty($comptes)): ?>
                 <tr>
-                    <td colspan="7" class="recent-empty">Aucun compte enregistré.</td>
+                    <td colspan="8" class="recent-empty">Aucun compte enregistré.</td>
                 </tr>
                 <?php else: ?>
                 <?php foreach ($comptes as $c):
@@ -401,6 +434,9 @@ include __DIR__ . '/../includes/header_admin.php';
                     </td>
                     <td class="td-email">
                         <?= e($c['email']) ?>
+                    </td>
+                    <td class="td-tel">
+                        <?= e($c['tel'] ?: '—') ?>
                     </td>
                     <td><span
                             class="role role-<?= $roleCls ?>"><?= e($roleLib) ?></span>

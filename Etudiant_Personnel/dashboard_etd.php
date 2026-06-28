@@ -15,15 +15,15 @@ if (!isset($_SESSION['matricule_user'])) {
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .bg-esp-purple {
-            background-color: #4A0E4E;
+            background-color: #650665;
         }
 
         .text-esp-purple {
-            color: #4A0E4E;
+            color: #650665;
         }
 
         .border-esp-purple {
-            border-color: #4A0E4E;
+            border-color: #650665;
         }
 
         .bg-esp-gold {
@@ -36,7 +36,7 @@ if (!isset($_SESSION['matricule_user'])) {
 
         .btn-details-light {
             background-color: #F3EBF4;
-            color: #4A0E4E;
+            color: #650665;
         }
 
         .custom-scrollbar::-webkit-scrollbar {
@@ -301,7 +301,7 @@ if (!isset($_SESSION['matricule_user'])) {
 
     <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 w-auto max-w-md">
         <div
-            class="bg-[#4A0E4E] text-white rounded-full shadow-xl px-4 py-2 flex items-center gap-4 border border-purple-950/40">
+            class="bg-[#650665] text-white rounded-full shadow-xl px-4 py-2 flex items-center gap-4 border border-purple-950/40">
             <button id="btn-dock-dash" onclick="switchView('dashboard')"
                 class="p-2.5 bg-[#5D1962] rounded-full transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
@@ -325,7 +325,7 @@ if (!isset($_SESSION['matricule_user'])) {
                     class="w-8 h-8 bg-[#322336] text-[#A697A8] text-xs font-bold rounded-full flex items-center justify-center border border-purple-800/40">
                     MC</div>
                 <span
-                    class="absolute bottom-0 right-0 w-2 h-2 bg-[#D4AF37] rounded-full border border-[#4A0E4E]"></span>
+                    class="absolute bottom-0 right-0 w-2 h-2 bg-[#D4AF37] rounded-full border border-[#650665]"></span>
             </a>
         </div>
     </div>

@@ -261,7 +261,7 @@ body.admin-body {
     padding: 13px 22px; font-family: var(--font); font-size: 15px; font-weight: 700;
     text-decoration: none; cursor: pointer; transition: background .15s;
 }
-.btn-aubergine:hover { background: #50123c; }
+.btn-aubergine:hover { background: #4d044d; }
 .btn-outline {
     display: inline-flex; align-items: center; justify-content: center;
     background: #fff; color: var(--wine);

@@ -7,8 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #F3F4F6; font-family: sans-serif; }
-        .bg-esp-purple { background-color: #4A0E4E !important; }
-        .text-esp-purple { color: #4A0E4E !important; }
+        .bg-esp-purple { background-color: #650665 !important; }
+        .text-esp-purple { color: #650665 !important; }
         .bg-esp-gold { background-color: #D4AF37 !important; }
         .bg-right-maquette { background-color: #EAE3EB !important; }
         .input-maquette-white { background-color: #FFFFFF !important; color: #1F2937; border: none; }

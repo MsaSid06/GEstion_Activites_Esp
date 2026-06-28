@@ -25,11 +25,11 @@ if (isset($_SESSION['matricule_user'])) {
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .bg-esp-purple {
-      background-color: #4a0e4e;
+      background-color: #650665;
     }
 
     .text-esp-purple {
-      color: #4a0e4e;
+      color: #650665;
     }
 
     .bg-esp-gold {
@@ -321,6 +321,8 @@ if (isset($_SESSION['matricule_user'])) {
         .then(response => response.text())
         .then(data => {
           switch (data) {
+            case '0':
+              window.location.href = "./Etudiant_Personnel/dashboard_etd.php";
             case '1':
               window.location.href = "./Etudiant_Personnel/dashboard_etd.php";
               break;

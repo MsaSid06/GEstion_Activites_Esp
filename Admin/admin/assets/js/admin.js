@@ -25,8 +25,8 @@
 
     // Dégradé vertical aubergine.
     var gradient = ctx.createLinearGradient(0, 0, 0, canvas.offsetHeight || 300);
-    gradient.addColorStop(0, '#5a1240');
-    gradient.addColorStop(1, '#2a0720');
+    gradient.addColorStop(0, '#650665');
+    gradient.addColorStop(1, '#4d044d');
 
     var maxVal = Math.max(1, Math.max.apply(null, valeurs.length ? valeurs : [1]));
 
@@ -37,7 +37,7 @@
             datasets: [{
                 data: valeurs,
                 backgroundColor: gradient,
-                hoverBackgroundColor: '#3a0a2c',
+                hoverBackgroundColor: '#4d044d',
                 borderRadius: 6,
                 borderSkipped: false,
                 maxBarThickness: 46,

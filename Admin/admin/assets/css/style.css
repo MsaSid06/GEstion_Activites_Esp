@@ -7,12 +7,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 :root {
-    --wine:        #3a0a2c;   /* panneau gauche, carte de profil sélectionnée */
-    --wine-deep:   #2a0720;   /* dégradé bas du panneau gauche */
+    --wine:        #650665;   /* panneau gauche, carte de profil sélectionnée */
+    --wine-deep:   #650665;   /* dégradé bas du panneau gauche */
     --gold:        #c6a02c;   /* logo, bouton principal */
     --gold-hover:  #b18d22;
     --panel:       #ecd9e6;   /* fond du panneau droit */
-    --ink:         #2a2230;   /* texte foncé */
+    --ink:         #650665;   /* texte foncé */
     --muted:       #8a7c86;   /* texte secondaire */
     --white:       #ffffff;
     --border:      #e3d0dd;   /* bordures de champs */

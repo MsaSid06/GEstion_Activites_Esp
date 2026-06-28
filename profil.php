@@ -8,12 +8,12 @@
  * L'utilisateur peut modifier : prénom, nom, téléphone, mot de passe.
  * L'email n'est PAS modifiable (affiché en lecture seule).
  */
-//sessions
+
 session_start();
 require_once __DIR__ . '/Gestionnaire/models/utilisateur.php'; // charge aussi connexionBD()
 
 // Identifie l'utilisateur connecté (clé posée par la connexion, commune à tous les espaces).
-$matricule = $_SESSION['matricule_user'] ?? null;
+$matricule = $_SESSION['matricule_user'] ?? ($_SESSION['user']['matricule'] ?? null);
 if (!$matricule) {
     header('Location: /GestionDesActiviteEsp/index.php');
     exit;
@@ -86,6 +86,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Met à jour la session pour que l'avatar / le nom affichés soient corrects.
             $_SESSION['nom']    = $old['nom'];
             $_SESSION['prenom'] = $old['prenom'];
+            if (isset($_SESSION['user'])) {
+                $_SESSION['user']['nom']    = $old['nom'];
+                $_SESSION['user']['prenom'] = $old['prenom'];
+            }
             $success = true;
             $u = getUtilisateurParMatricule($pdo, $matricule);
         } else {

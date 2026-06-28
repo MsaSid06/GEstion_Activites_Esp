@@ -1,6 +1,7 @@
 <?php
 
 // api_login.php
+session_start();
 header('Content-Type: application/json');
 require_once '../Gestionnaire/config/connexion.php';
 $pdo = connexionBD();
@@ -23,6 +24,14 @@ try {
         echo json_encode(["error" => "Email ou mot de passe incorrect."]);
         exit;
     }
+
+    // Ouvre une vraie session PHP (mêmes clés que les autres espaces),
+    // pour que profil.php et la barre reconnaissent l'utilisateur.
+    $_SESSION['matricule_user'] = $user['matricule_user'];
+    $_SESSION['nom']            = $user['nom'];
+    $_SESSION['prenom']         = $user['prenom'];
+    $_SESSION['profil']         = $user['profil'];
+    $_SESSION['email']          = $user['email'];
 
     echo json_encode([
         "success" => true,

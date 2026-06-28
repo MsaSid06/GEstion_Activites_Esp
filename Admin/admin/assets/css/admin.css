@@ -276,8 +276,8 @@ body.admin-body {
 .users-table-wrap { overflow-x: auto; }
 .users-table { width: 100%; border-collapse: collapse; }
 .users-table thead th {
-    text-align: left; background: #f1e4ee;
-    color: #8a6f84; font-size: 12px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase;
+    text-align: left; background: #efdcee;
+    color: #650665; font-size: 12px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase;
     padding: 16px 22px; white-space: nowrap;
 }
 .users-table tbody td {
@@ -296,10 +296,10 @@ body.admin-body {
     display: inline-block; padding: 6px 14px; border-radius: 999px;
     font-size: 13px; font-weight: 700; white-space: nowrap;
 }
-.role-etudiant     { background: #f1e7f3; color: #7a3a6e; border: 1px solid #e4d2e6; }
-.role-personnel    { background: #e7d6ec; color: #6a2a5f; }
-.role-gestionnaire { background: #f7f0cf; color: #8a6d12; }
-.role-admin        { background: #d8b6cf; color: #4a1538; }
+.role-etudiant     { background: #f7eef6; color: #8a4f84; border: 1px solid #ecddea; }
+.role-personnel    { background: #f1e2ef; color: #7a2270; border: 1px solid #e6d2e4; }
+.role-gestionnaire { background: #e7cfe5; color: #650665; border: 1px solid #dabfd7; }
+.role-admin        { background: #650665; color: #fff; }
 
 /* Actions de ligne */
 .row-actions { display: inline-flex; align-items: center; gap: 6px; justify-content: flex-end; }

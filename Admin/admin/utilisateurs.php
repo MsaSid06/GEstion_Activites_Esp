@@ -146,8 +146,8 @@ if (is_post()) {
                 if ($form_action === 'creer') {
                     // Matricule généré automatiquement (U001, U002, ...).
                     $matricule = generer_matricule($pdo);
-                    // Mot de passe provisoire EN CLAIR : le modèle se charge du hachage.
-                    $tmp = 'Esp' . random_int(1000, 9999);
+                    // Mot de passe provisoire fixe (le modèle se charge du hachage).
+                    $tmp = '1234';
 
                     $ok = creerUtilisateur(
                         $pdo,

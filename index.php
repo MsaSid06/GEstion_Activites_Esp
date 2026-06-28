@@ -321,8 +321,6 @@ if (isset($_SESSION['matricule_user'])) {
         .then(response => response.text())
         .then(data => {
           switch (data) {
-            case '0':
-              window.location.href = "./Etudiant_Personnel/dashboard_etd.php";
             case '1':
               window.location.href = "./Etudiant_Personnel/dashboard_etd.php";
               break;

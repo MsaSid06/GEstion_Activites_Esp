@@ -53,7 +53,6 @@ try {
         $matricule = "U" . str_pad($numero, 3, "0", STR_PAD_LEFT);
     }
 
-    $mot_de_passe = password_hash($mot_de_passe,PASSWORD_DEFAULT);
 
     if ($profil === "ETUDIANT") {
 

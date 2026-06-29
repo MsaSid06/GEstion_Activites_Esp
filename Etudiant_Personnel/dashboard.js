@@ -1,33 +1,54 @@
 let DataActivites = [];
+let DataStructures = [];
 let currentFilter = "ALL";
 let currentDept = "ALL";
 let searchQuery = "";
 let currentDate = new Date();
+let currentStructure = "ALL";
 let viewHistory = "dashboard";
 
 window.onload = async function () {
+    await chargerStructures();
     await chargerActivites();
     renderAll();
     renderCalendar();
 };
+async function chargerStructures() {
+    try {
+        const res = await fetch('api_structures.php');
+        const data = await res.json();
+
+        if (!data.error) {
+            DataStructures = data;
+            remplirSelectStructures();
+        } else {
+            console.error("Erreur API structures :", data.error);
+        }
+    } catch (e) {
+        console.error("Erreur chargement structures :", e);
+    }
+}
 
 async function chargerActivites() {
     try {
         const res = await fetch('api_activites.php');
         const data = await res.json();
         if (!data.error) {
-            DataActivites = data.map(act => ({
-                id: act.id_act,
-                titre: act.titre,
-                dept: act.type_act,
-                statut: act.statut,
-                date: formatDate(act.date_debut),
-                date_fin: formatDate(act.date_fin),
-                heure_debut: formatHeure(act.date_debut),
-                heure_fin: formatHeure(act.date_fin),
-                lieu: act.lieu,
-                desc: act.description
-            }));
+           DataActivites = data.map(act => ({
+    id: act.id_act,
+    titre: act.titre,
+    dept: act.nom_struct || "Non définie",
+    type_struct: act.type_struct || "",
+    type_act: act.type_act || "",
+    statut: act.statut,
+    date: formatDate(act.date_debut),
+    date_fin: formatDate(act.date_fin),
+    heure_debut: formatHeure(act.date_debut),
+    heure_fin: formatHeure(act.date_fin),
+    lieu: act.lieu,
+    desc: act.description || ""
+}));
+
         }
     } catch (e) {
         console.error("Erreur chargement activités:", e);
@@ -248,20 +269,22 @@ function switchView(viewName) {
         if (btnDash) btnDash.className = "p-2.5 bg-[#5D1962] rounded-full transition-all";
         if (btnList) btnList.className = "p-2.5 hover:bg-purple-900/40 rounded-full transition-all";
     } else {
-        // Réinitialiser le filtre à "Tout" à chaque fois qu'on ouvre la liste
-        currentFilter = "ALL";
-        currentDept = "ALL";
-        searchQuery = "";
-
-        // Remettre le bouton "Tout" actif visuellement
-        const toutBtn = document.querySelector('.grid-filter-btn');
-        if (toutBtn) updateFilterButtons(toutBtn, 'grid-filter-btn');
-
         dash.className = "space-y-8 hidden";
         list.className = "space-y-8 block";
         if (btnList) btnList.className = "p-2.5 bg-[#5D1962] rounded-full transition-all";
         if (btnDash) btnDash.className = "p-2.5 hover:bg-purple-900/40 rounded-full transition-all";
-
-        renderAll();
     }
+}
+function remplirSelectStructures() {
+    const select = document.getElementById('structure-filter');
+    if (!select) return;
+
+    select.innerHTML = `<option value="ALL">Toutes les structures</option>`;
+
+    DataStructures.forEach(struct => {
+        const option = document.createElement('option');
+        option.value = struct.nom_struct;
+        option.textContent = `${struct.nom_struct} (${struct.type_struct})`;
+        select.appendChild(option);
+    });
 }

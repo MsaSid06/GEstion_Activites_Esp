@@ -139,21 +139,18 @@ foreach ($activites as $a) {
 
 <body>
 
-    <header class="topbar bg-esp-purple">
-        <div class="user">
-            <div class="avatar">
-                <?= strtoupper($_SESSION["prenom"][0])?>
+    <header class="bg-[#650665] px-6 py-5 flex justify-between items-center sticky top-0 z-40 shadow-md">
+        <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-full bg-white text-[#650665] flex items-center justify-center font-black text-lg">
+                <?= strtoupper(substr($_SESSION["prenom"], 0, 1)) ?>
             </div>
             <div>
-                <h3> <?php echo $_SESSION["prenom"] . " ". strtoupper($_SESSION["nom"])?>
-                </h3>
-                <small>Gestionnaire</small>
+                <h3 class="text-white font-bold text-base leading-tight"><?= ucfirst(strtolower($_SESSION["prenom"])) . ' ' . strtoupper($_SESSION["nom"]) ?></h3>
+                <small class="text-white/75 text-xs block">Gestionnaire</small>
                 <a href="./controllers/logout.php"
-                    class="flex items-center gap-2 text-red-500 hover:text-red-600 transition">
-
-                    <i class="fa-solid fa-right-from-bracket"></i>
+                    class="inline-flex items-center gap-1.5 text-red-400 hover:text-red-300 transition text-xs font-semibold mt-0.5">
+                    <i class="fa-solid fa-right-from-bracket w-4 h-4"></i>
                     <span>Déconnexion</span>
-
                 </a>
             </div>
         </div>

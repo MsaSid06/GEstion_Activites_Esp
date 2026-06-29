@@ -34,7 +34,7 @@ $activites = getToutesActivitesGestionnaire($pdo, $_SESSION["matricule_user"]);
         <div class="flex justify-between items-center mb-6">
 
             <h1 class="text-3xl font-bold text-gray-900 flex items-center gap-2">
-                <i class="fa-solid fa-layer-group text-violet-600"></i>
+                <i class="fa-solid fa-layer-group text-[#650665]"></i>
                 Toutes mes activités
             </h1>
 
@@ -43,8 +43,8 @@ $activites = getToutesActivitesGestionnaire($pdo, $_SESSION["matricule_user"]);
                 <?= count($activites) ?> activité(s)
             </p>
 
-            <a href="../DashboardGestionnaire.php" class="flex items-center gap-2 bg-violet-600 text-white px-4 py-2 rounded-xl text-sm font-semibold
-                  hover:bg-violet-700 transition">
+            <a href="../DashboardGestionnaire.php" class="flex items-center gap-2 bg-[#650665] text-white px-4 py-2 rounded-xl text-sm font-semibold
+                  hover:bg-[#4d044d] transition">
 
                 <i class="fa-solid fa-arrow-left"></i>
                 Retour
@@ -67,14 +67,14 @@ $activites = getToutesActivitesGestionnaire($pdo, $_SESSION["matricule_user"]);
             <?php foreach ($activites as $a): ?>
 
             <div class="bg-white rounded-2xl shadow-md p-5 border-l-4 border-transparent
-                            hover:border-violet-600 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                            hover:border-[#650665] hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
 
                 <!-- TITRE + ACTIONS -->
                 <div class="flex items-center justify-between mb-3">
 
                     <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
 
-                        <i class="fa-solid fa-bullseye text-violet-500"></i>
+                        <i class="fa-solid fa-bullseye text-[#650665]"></i>
 
                         <?= htmlspecialchars($a['titre']) ?>
 
@@ -129,14 +129,6 @@ $activites = getToutesActivitesGestionnaire($pdo, $_SESSION["matricule_user"]);
                     <?= htmlspecialchars($a['date_debut']) ?>
 
                 </p>
-                <p class="text-sm text-gray-600 flex items-center gap-2 mb-2">
-
-                    <i class="fa-solid fa-clock text-gray-400"></i>
-
-                    Fin :
-                    <?= htmlspecialchars($a['date_fin']) ?>
-
-                </p>
 
                 <!-- LIEU -->
                 <p class="text-sm text-gray-600 flex items-center gap-2 mb-4">
@@ -149,8 +141,8 @@ $activites = getToutesActivitesGestionnaire($pdo, $_SESSION["matricule_user"]);
 
                 <!-- BOUTON -->
                 <a href="./detailsActivite.php?id=<?= $a['id_act'] ?>"
-                    class="inline-flex items-center gap-2 bg-violet-600 text-white px-4 py-2 rounded-xl text-sm font-semibold
-                              hover:bg-violet-700 transition">
+                    class="inline-flex items-center gap-2 bg-[#650665] text-white px-4 py-2 rounded-xl text-sm font-semibold
+                              hover:bg-[#4d044d] transition">
 
                     <i class="fa-solid fa-eye"></i>
                     Voir détails

@@ -159,8 +159,8 @@ foreach ($activites as $a) {
         </div>
 
 
-        <a href="./action/formCreationActivite.php" class="flex items-center gap-2 bg-violet-600 text-white px-3 py-2 rounded-xl
-              hover:bg-violet-700 transition">
+        <a href="./action/formCreationActivite.php" class="flex items-center gap-2 bg-[#650665] text-white px-3 py-2 rounded-xl
+              hover:bg-[#4d044d] transition">
 
             <i class="fa-solid fa-circle-plus"></i>
             <span class="text-sm font-medium">Creer une Activité</span>
@@ -206,6 +206,11 @@ foreach ($activites as $a) {
                         <small class="text-gray-500">Activités du mois</small>
                     </div>
 
+                    <div class="flex gap-2">
+                        <button id="prev" class="px-3 py-1 bg-gray-200 rounded">‹</button>
+                        <button id="next" class="px-3 py-1 bg-gray-200 rounded">›</button>
+                    </div>
+
                 </div>
 
                 <!-- CALENDRIER -->
@@ -227,18 +232,17 @@ foreach ($activites as $a) {
                 <h3 class="text-lg font-semibold flex items-center justify-between mb-4">
 
                     <span class="flex items-center gap-2">
-                        <i class="fa-solid fa-layer-group text-violet-600"></i>
+                        <i class="fa-solid fa-layer-group text-[#650665]"></i>
                         Mes activités récentes
                     </span>
 
                     <a href="./action/mesActivites.php"
-                        class="flex items-center gap-2 text-sm font-medium text-violet-600 hover:text-violet-800 transition">
+                        class="flex items-center gap-2 text-sm font-medium text-[#650665] hover:text-[#4d044d] transition">
                         Tout voir
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>
 
                 </h3>
-                <?php if(count($activites) > 0):?>
 
                 <div class="space-y-3">
 
@@ -259,15 +263,15 @@ foreach ($activites as $a) {
                                 <?= $statut['label'] ?>
                             </span>
 
-                            <i class="fa-regular fa-calendar text-gray-300 group-hover:text-violet-600 transition"></i>
+                            <i class="fa-regular fa-calendar text-gray-300 group-hover:text-[#4d044d] transition"></i>
 
                         </div>
 
                         <!-- TITRE -->
                         <h4
-                            class="text-gray-800 font-semibold flex items-center gap-2 group-hover:text-violet-700 transition">
+                            class="text-gray-800 font-semibold flex items-center gap-2 group-hover:text-[#4d044d] transition">
 
-                            <i class="fa-solid fa-bullseye text-violet-500"></i>
+                            <i class="fa-solid fa-bullseye text-[#650665]"></i>
 
                             <?= htmlspecialchars($act["titre"]) ?>
 
@@ -297,16 +301,7 @@ foreach ($activites as $a) {
                     <?php endforeach; ?>
 
                 </div>
-                <?php  else: ?>
-                <div
-                    class="bg-white p-6 rounded-xl shadow flex items-center gap-2 text-gray-500 hover:-translate-y-1 transition-all duration-300">
-                    <i class="fa-regular fa-folder-open"></i>
-                    Aucune activité disponible.
-                </div>
 
-                <?php endif; ?>
-
-            </div>
             </div>
 
 
@@ -343,9 +338,6 @@ foreach ($activites as $a) {
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-            const now = new Date();
-            now.setHours(0, 0, 0, 0);
-
             for (let i = 0; i < firstDay; i++) {
                 calendar.innerHTML += `<div></div>`;
             }
@@ -353,35 +345,37 @@ foreach ($activites as $a) {
             for (let day = 1; day <= daysInMonth; day++) {
 
                 const cellDate = new Date(year, month, day);
-                cellDate.setHours(0, 0, 0, 0);
 
-                let dayStatus = ""; // pas d'activité qui commence ce jour-là
+                let className = "day";
 
                 events.forEach(e => {
 
                     const start = new Date(e.start);
                     const end = new Date(e.end);
-                    start.setHours(0, 0, 0, 0);
-                    end.setHours(0, 0, 0, 0);
 
-                    // On ne colore QUE la cellule du jour de début de l'activité
-                    if (cellDate.getTime() === start.getTime()) {
+                    if (cellDate >= start && cellDate <= end) {
 
-                        if (start <= now) {
-                            if (end < now) {
-                                dayStatus = "done"; // Terminée (vert)
-                            } else {
-                                dayStatus = "ongoing"; // En cours (orange)
-                            }
-                        } else {
-                            dayStatus = "upcoming"; // À venir (bleu)
-                        }
+                        const now = new Date();
+
+                        if (now < start) className += " upcoming";
+                        else if (now >= start && now <= end) className += " ongoing";
+                        else className += " done";
                     }
                 });
 
-                calendar.innerHTML += `<div class="day ${dayStatus}">${day}</div>`;
+                calendar.innerHTML += `<div class="${className}">${day}</div>`;
             }
         }
+
+        document.getElementById("prev").onclick = () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+        };
+
+        document.getElementById("next").onclick = () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        };
 
         renderCalendar();
     </script>

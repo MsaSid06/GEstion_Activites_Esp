@@ -37,7 +37,7 @@ $notifications = notifications_recentes($pdo, $_SESSION["matricule_user"]);
             <!-- GAUCHE : titre + compteur -->
             <div class="flex items-center gap-2 text-gray-800 font-semibold text-lg">
 
-                <i class="fa-solid fa-bell text-violet-600"></i>
+                <i class="fa-solid fa-bell text-[#650665]"></i>
 
                 <span>Notifications</span>
 
@@ -48,8 +48,8 @@ $notifications = notifications_recentes($pdo, $_SESSION["matricule_user"]);
             </div>
 
             <!-- DROITE : bouton créer -->
-            <a href="./createNotification.php" class="flex items-center gap-2 bg-violet-600 text-white px-3 py-2 rounded-xl
-              hover:bg-violet-700 transition">
+            <a href="./createNotification.php" class="flex items-center gap-2 bg-[#650665] text-white px-3 py-2 rounded-xl
+              hover:bg-[#4d044d] transition">
 
                 <i class="fa-solid fa-circle-plus"></i>
                 <span class="text-sm font-medium">Créer</span>
@@ -68,7 +68,7 @@ $notifications = notifications_recentes($pdo, $_SESSION["matricule_user"]);
                 <!-- ICON -->
                 <div
                     class="w-11 h-11 flex items-center justify-center rounded-full
-                            <?= $notif['id_act'] ? 'bg-violet-100 text-violet-600' : 'bg-orange-100 text-orange-500' ?>">
+                            <?= $notif['id_act'] ? 'bg-[#f3e7f3] text-[#650665]' : 'bg-orange-100 text-orange-500' ?>">
 
                     <?php if ($notif['id_act']): ?>
                     <i class="fa-solid fa-calendar-check"></i>

@@ -55,7 +55,7 @@ function e(string $v): string
         <section class="rounded-2xl bg-white border border-gray-200 shadow-sm p-6 md:p-8">
 
             <h2 class="text-xl font-semibold text-gray-900 flex items-center gap-2 mb-6">
-                <i class="fa-solid fa-bell text-violet-600"></i>
+                <i class="fa-solid fa-bell text-[#650665]"></i>
                 Créer une notification
             </h2>
 
@@ -91,7 +91,7 @@ function e(string $v): string
                         Annuler
                     </a>
 
-                    <button class="bg-aubergine-700 text-white px-5 py-2 rounded-lg hover:bg-violet-800 transition">
+                    <button class="bg-aubergine-700 text-white px-5 py-2 rounded-lg hover:bg-[#4d044d] transition">
                         Envoyer
                     </button>
 

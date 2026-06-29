@@ -35,7 +35,7 @@ if (!$activite) {
 <body class="bg-gray-200 min-h-screen flex items-center justify-center p-6">
 
     <div
-        class="bg-white rounded-2xl shadow-md p-5 border-l-[10px] border-transparent hover:border-l-purple-700 hover:shadow-xl hover:translate-x-1 transition-all duration-300 w-[600px]">
+        class="bg-white rounded-2xl shadow-md p-5 border-l-[10px] border-transparent hover:border-l-[#650665] hover:shadow-xl hover:translate-x-1 transition-all duration-300 w-[600px]">
 
         <h1 class="text-2xl font-bold mb-4">
             <?= htmlspecialchars($activite['titre']) ?>
@@ -60,7 +60,7 @@ if (!$activite) {
         </p>
 
         <a href="./mesActivites.php"
-            class="inline-block bg-esp-purple text-black px-4 py-2 rounded-xl text-sm font-semibold hover:bg-purple-900 hover:text-white transition ">
+            class="inline-block bg-esp-purple text-black px-4 py-2 rounded-xl text-sm font-semibold hover:bg-[#4d044d] hover:text-white transition ">
             <-- retour </a>
 
     </div>

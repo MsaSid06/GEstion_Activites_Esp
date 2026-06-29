@@ -134,7 +134,9 @@ if (is_post()) {
         }
 
         if (empty($errors)) {
-            $niveau = $old['role'] === 'ADMIN' ? 9 : ($old['role'] === 'GESTIONNAIRE' ? 1 : 0);
+            // Niveau d'accès aligné sur le rôle : étudiant 0, personnel 1, gestionnaire 2, admin 3.
+            $NIVEAUX_PAR_ROLE = ['ETUDIANT' => 0, 'PERSONNEL' => 1, 'GESTIONNAIRE' => 2, 'ADMIN' => 3];
+            $niveau = $NIVEAUX_PAR_ROLE[$old['role']] ?? 0;
 
             try {
                 $pdo->beginTransaction();

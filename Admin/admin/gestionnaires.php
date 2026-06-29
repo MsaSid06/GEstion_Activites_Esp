@@ -93,10 +93,24 @@ if (is_post()) {
         if ($old['email'] === '' || !filter_var($old['email'], FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = 'Email invalide.';
         }
+        // Niveau choisi (1/2/3) -> profil correspondant.
         $niveau = (int) $old['niveau'];
         if (!isset($NIVEAUX[$niveau])) {
             $errors['niveau'] = "Niveau d'accès invalide.";
         }
+        if ($niveau === 2) {
+            $profilCible = 'GESTIONNAIRE';
+        } elseif ($niveau === 3) {
+            $profilCible = 'ADMIN';
+        } else {
+            // Utilisateur : on conserve le profil de base de la personne (Étudiant ou Personnel).
+            $infoUser     = getUtilisateurParMatricule($pdo, $old['matricule']);
+            $profilActuel = $infoUser['profil'] ?? 'PERSONNEL';
+            $profilCible  = in_array($profilActuel, ['ETUDIANT', 'PERSONNEL'], true) ? $profilActuel : 'PERSONNEL';
+        }
+        // niveau_acces aligné sur le profil : étudiant 0, personnel 1, gestionnaire 2, admin 3.
+        $NIVEAUX_PAR_PROFIL = ['ETUDIANT' => 0, 'PERSONNEL' => 1, 'GESTIONNAIRE' => 2, 'ADMIN' => 3];
+        $niveauAcces = $NIVEAUX_PAR_PROFIL[$profilCible] ?? 1;
 
         $structOk = false;
         if ($old['id_struct'] !== '') {
@@ -104,7 +118,7 @@ if (is_post()) {
             $s->execute([':s' => $old['id_struct']]);
             $structOk = (bool) $s->fetchColumn();
         }
-        if (!$structOk) {
+        if ($profilCible === 'GESTIONNAIRE' && !$structOk) {
             $errors['id_struct'] = 'Structure requise.';
         }
 
@@ -121,7 +135,7 @@ if (is_post()) {
             try {
                 $pdo->beginTransaction();
 
-                // Promotion en GESTIONNAIRE via le modèle (on conserve le téléphone existant).
+                // Mise à jour du profil selon le niveau choisi (on conserve le téléphone existant).
                 $courant = getUtilisateurParMatricule($pdo, $old['matricule']);
                 $tel     = $courant['tel'] ?? null;
                 $ok = modifierUtilisateur(
@@ -131,21 +145,29 @@ if (is_post()) {
                     $old['prenom'],
                     $old['email'],
                     $tel,
-                    'GESTIONNAIRE',
-                    $niveau
+                    $profilCible,
+                    $niveauAcces
                 );
 
-                // Rattachement au département (table APPARTENIR) via le modèle.
-                if ($ok) {
-                    $pdo->prepare('DELETE FROM APPARTENIR WHERE matricule_user = :m')->execute([':m' => $old['matricule']]);
-                    $ok = creerAppartenance($pdo, $old['matricule'], $old['id_struct']) !== false;
-                }
+                if ($profilCible === 'GESTIONNAIRE') {
+                    // Rattachement au département (table APPARTENIR) via le modèle.
+                    if ($ok) {
+                        $pdo->prepare('DELETE FROM APPARTENIR WHERE matricule_user = :m')->execute([':m' => $old['matricule']]);
+                        $ok = creerAppartenance($pdo, $old['matricule'], $old['id_struct']) !== false;
+                    }
 
-                // Structure gérée (pas de modèle GESTIONNAIRE -> SQL direct).
-                if ($ok) {
-                    $pdo->prepare('DELETE FROM GESTIONNAIRE WHERE matricule_user = :m')->execute([':m' => $old['matricule']]);
-                    $ok = $pdo->prepare('INSERT INTO GESTIONNAIRE (matricule_user, id_struct) VALUES (:m, :s)')
-                              ->execute([':m' => $old['matricule'], ':s' => $old['id_struct']]);
+                    // Structure gérée (pas de modèle GESTIONNAIRE -> SQL direct).
+                    if ($ok) {
+                        $pdo->prepare('DELETE FROM GESTIONNAIRE WHERE matricule_user = :m')->execute([':m' => $old['matricule']]);
+                        $ok = $pdo->prepare('INSERT INTO GESTIONNAIRE (matricule_user, id_struct) VALUES (:m, :s)')
+                                  ->execute([':m' => $old['matricule'], ':s' => $old['id_struct']]);
+                    }
+                } else {
+                    // Utilisateur / Administrateur : on retire les rattachements de gestionnaire.
+                    if ($ok) {
+                        $pdo->prepare('DELETE FROM GESTIONNAIRE WHERE matricule_user = :m')->execute([':m' => $old['matricule']]);
+                        $pdo->prepare('DELETE FROM APPARTENIR WHERE matricule_user = :m')->execute([':m' => $old['matricule']]);
+                    }
                 }
 
                 if ($ok) {

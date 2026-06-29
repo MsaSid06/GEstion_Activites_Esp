@@ -196,7 +196,7 @@
             if (res.ok && result.success) {
                 localStorage.setItem('user_name', result.prenom + ' ' + result.nom);
                 localStorage.setItem('user_profil', result.profil);
-                window.location.href = 'dashboardetprs.php';
+                window.location.href = 'dashboard_etd.php';
             } else {
                 alert(result.error || "Identifiants incorrects");
             }

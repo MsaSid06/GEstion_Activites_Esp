@@ -21,7 +21,8 @@ function connexionBD(): PDO
     try {
         return new PDO($dsn, $user, $password, $options);
     } catch (PDOException $e) {
-        die('Erreur de connexion : ' . $e->getMessage());
+        die('Erreur de connexion, verifiez si le serveur est demarrer');
+
     }
 }
 

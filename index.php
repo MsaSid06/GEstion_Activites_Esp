@@ -321,9 +321,7 @@ if (isset($_SESSION['matricule_user'])) {
         .then(response => response.text())
         .then(data => {
           switch (data) {
-            case '0':
-              window.location.href = "./Etudiant_Personnel/dashboard_etd.php";
-            case '1':
+            case '0' || "1":
               window.location.href = "./Etudiant_Personnel/dashboard_etd.php";
               break;
             case '2':
@@ -333,7 +331,7 @@ if (isset($_SESSION['matricule_user'])) {
               window.location.href = "./Admin/admin/dashboard.php";
               break;
           }
-          if (data != "1" || data != "2" || data != "3") {
+          if (data == "1" || data == "2" || data == "3") {} else {
 
             document.getElementById("message").innerHTML = data;
             setTimeout(() => {
@@ -343,7 +341,6 @@ if (isset($_SESSION['matricule_user'])) {
           }
         });
     });
-
     async function handleRegister(e) {
       e.preventDefault();
       const data = {

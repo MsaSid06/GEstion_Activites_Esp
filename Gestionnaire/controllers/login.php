@@ -19,22 +19,11 @@ if ($email && $password) {
         $_SESSION['profil'] = $user['profil'];
         $_SESSION['nom'] = $user['nom'];
         $_SESSION['prenom'] = $user['prenom'];
-        switch ($_SESSION['profil']) {
-            case 'ADMIN':
-                echo "3";
-                break;
+        $_SESSION['niveau_acces'] = $user['niveau_acces'];
+        echo $_SESSION['niveau_acces'];
 
-            case 'GESTIONNAIRE':
-                echo "2";
-                break;
-
-            case 'ETUDIANT' || 'PERSONNEL':
-                echo "1";
-                break;
-
-        }
     } else {
-        echo "<h4 style='color:red'>invalid </h4>";
+        echo "<h4 style='color:red'><strong>invalid </strong></h4>";
     }
 
 } else {

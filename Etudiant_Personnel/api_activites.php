@@ -5,21 +5,23 @@ if (!isset($_SESSION['matricule_user'])) {
     echo json_encode(["error" => "Non autorisé"]);
     exit;
 }
-require_once 'db.php';
+require_once '../Gestionnaire/config/connexion.php';
 
 try {
+    $pdo = connexionBD();
+
     $stmt = $pdo->query("
         SELECT 
-            id_activite,
+            id_act,
             titre,
             description,
+            type_act,
             date_debut,
             date_fin,
             lieu,
-            departement,
             CASE 
-                WHEN date_fin < CURDATE() THEN 'Terminé'
-                WHEN date_debut <= CURDATE() AND date_fin >= CURDATE() THEN 'En cours'
+                WHEN date_fin < NOW() THEN 'Terminé'
+                WHEN date_debut <= NOW() AND date_fin >= NOW() THEN 'En cours'
                 ELSE 'À venir'
             END AS statut
         FROM ACTIVITE

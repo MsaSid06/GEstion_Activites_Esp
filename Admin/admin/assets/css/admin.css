@@ -70,7 +70,7 @@ body.admin-body {
 .adm-main { max-width: 1280px; margin: 0 auto; padding: 32px 40px; }
 
 .adm-pagehead { margin-bottom: 26px; }
-.adm-pagehead h1 { font-size: 38px; font-weight: 800; margin: 0 0 6px; letter-spacing: -.5px; }
+.adm-pagehead h1 { font-size: 38px; font-weight: 800; margin: 0 0 6px; letter-spacing: -.5px; color: #000000; }
 .adm-pagehead p { margin: 0; color: var(--muted); font-size: 16px; }
 
 /* ---------- Cartes de statistiques ---------- */

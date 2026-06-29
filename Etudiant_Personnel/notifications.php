@@ -57,13 +57,13 @@ $notifications = getAllNotifications($pdo);
             </a>
 
         </div>
-        <div class="md:col-span-4 flex gap-1 justify-end">
+        <!-- <div class="md:col-span-4 flex gap-1 justify-end">
             <button onclick="filterGrid('ALL')"
                 class="grid-filter-btn bg-white border border-gray-200 text-gray-600 px-5 py-2.5 rounded-full text-xs font-semibold hover:bg-gray-50">Toutes</button>
             <button onclick="filterGrid('AVENIR')"
                 class="grid-filter-btn bg-white border border-gray-200 text-gray-600 px-5 py-2.5 rounded-full text-xs font-semibold hover:bg-gray-50">Notifications
                 provenant des activitées de ma structure</button>
-        </div>
+        </div> -->
 
         <!-- LISTE -->
         <div class="space-y-4">

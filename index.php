@@ -333,8 +333,13 @@ if (isset($_SESSION['matricule_user'])) {
               window.location.href = "./Admin/admin/dashboard.php";
               break;
           }
-          if (data != "succes") {
+          if (data != "1" || data != "2" || data != "3") {
+
             document.getElementById("message").innerHTML = data;
+            setTimeout(() => {
+              document.getElementById("message").innerHTML = "";
+
+            }, 1000);
           }
         });
     });

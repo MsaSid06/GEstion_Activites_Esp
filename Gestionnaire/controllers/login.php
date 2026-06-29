@@ -9,13 +9,9 @@ $email = $_POST['email'] ?? '';
 $password = $_POST['password'] ?? '';
 
 if ($email && $password) {
-    // var_dump($password);
     $pdo = connexionBD();
     $user = getUtilisateurParMail($pdo, $email);
-    // $hash = '$2y$10$Fkz75dNdCRovtHd1z54Kt.AdLqRyAcTB/0rwRGIazP6Qw92qSjq06';
-    // $pwd = password_verify($password, $user['mot_de_passe']);
-    // $pwd2 = password_verify("lome2006", $hash);
-    // var_dump($pwd2);
+
 
     if ($user && password_verify($password, $user['mot_de_passe'])) {
         $_SESSION['matricule_user'] = $user['matricule_user'];

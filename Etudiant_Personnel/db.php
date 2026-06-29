@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 function connexionBD(): PDO
 {
-    $host     = 'localhost'; 
+    $host     = 'localhost';
     $dbname   = 'gestion_activites_esp';
     $user     = 'root';
-    $password = '';  // ← CORRIGÉ : vide sur XAMPP
+    $password = 'lome2006';  // ← CORRIGÉ : vide sur XAMPP
     $charset  = 'utf8mb4';
 
     $dsn = "mysql:host={$host};dbname={$dbname};charset={$charset}";

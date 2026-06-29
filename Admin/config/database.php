@@ -10,7 +10,7 @@
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'gestion_activites_esp');
 define('DB_USER', 'root');
-define('DB_PASS', 'lome2006');
+define('DB_PASS', '');
 define('DB_CHARSET', 'utf8mb4');
 
 $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=' . DB_CHARSET;

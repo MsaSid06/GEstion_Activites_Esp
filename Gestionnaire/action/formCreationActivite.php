@@ -61,8 +61,8 @@ function e(string $v): string
                 extend: {
                     colors: {
                         aubergine: {
-                            700: '#5b2150',
-                            800: '#481a40'
+                            700: '#650665',
+                            800: '#4d044d'
                         }
                     }
                 }
@@ -163,7 +163,7 @@ function e(string $v): string
                         Annuler
                     </a>
 
-                    <button class="bg-aubergine-700 text-white px-5 py-2 rounded-lg">
+                    <button class="bg-aubergine-700 hover:bg-aubergine-800 transition text-white px-5 py-2 rounded-lg">
                         Créer l’activité
                     </button>
                 </div>

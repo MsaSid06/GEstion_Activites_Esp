@@ -37,7 +37,7 @@ async function chargerActivites() {
            DataActivites = data.map(act => ({
     id: act.id_act,
     titre: act.titre,
-    dept: act.nom_struct || "Non définie",
+    dept: act.nom_struct || "",
     type_struct: act.type_struct || "",
     type_act: act.type_act || "",
     statut: act.statut,
@@ -225,7 +225,7 @@ function openDetailedView(id) {
     document.getElementById("det-date-fin").innerText = act.date_fin;
     document.getElementById("det-heure-fin").innerText = act.heure_fin;
     document.getElementById("det-lieu").innerText = act.lieu;
-    document.getElementById("det-type").innerText = act.dept;
+    document.getElementById("det-type").innerText = act.type_act || ""; // ← CORRIGÉ
 
     const badgeText = document.getElementById("det-badge-text");
     const badge = document.getElementById("det-badge");
@@ -275,6 +275,7 @@ function switchView(viewName) {
         if (btnDash) btnDash.className = "p-2.5 hover:bg-purple-900/40 rounded-full transition-all";
     }
 }
+
 function remplirSelectStructures() {
     const select = document.getElementById('structure-filter');
     if (!select) return;

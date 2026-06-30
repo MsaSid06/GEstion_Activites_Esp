@@ -20,7 +20,10 @@ if ($email && $password) {
         $_SESSION['nom'] = $user['nom'];
         $_SESSION['prenom'] = $user['prenom'];
         $_SESSION['niveau_acces'] = $user['niveau_acces'];
-        echo $_SESSION['niveau_acces'];
+
+        // Redirection basée sur le PROFIL (fiable), pas sur niveau_acces qui peut diverger.
+        $codeParProfil = ['ETUDIANT' => '0', 'PERSONNEL' => '1', 'GESTIONNAIRE' => '2', 'ADMIN' => '3'];
+        echo $codeParProfil[$user['profil']] ?? '0';
 
     } else {
         echo "<h4 style='color:red'><strong>invalid </strong></h4>";

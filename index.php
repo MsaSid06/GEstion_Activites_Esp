@@ -320,24 +320,18 @@ if (isset($_SESSION['matricule_user'])) {
         })
         .then(response => response.text())
         .then(data => {
-          switch (data) {
-            case '0' || "1":
-              window.location.href = "./Etudiant_Personnel/dashboard_etd.php";
-              break;
-            case '2':
-              window.location.href = "./Gestionnaire/DashboardGestionnaire.php";
-              break;
-            case '3':
-              window.location.href = "./Admin/admin/dashboard.php";
-              break;
-          }
-          if (data == "1" || data == "2" || data == "3") {} else {
-
+          data = data.trim();
+          if (data === "0" || data === "1") {
+            window.location.href = "./Etudiant_Personnel/dashboard_etd.php";
+          } else if (data === "2") {
+            window.location.href = "./Gestionnaire/DashboardGestionnaire.php";
+          } else if (data === "3") {
+            window.location.href = "./Admin/admin/dashboard.php";
+          } else {
             document.getElementById("message").innerHTML = data;
             setTimeout(() => {
               document.getElementById("message").innerHTML = "";
-
-            }, 1000);
+            }, 3000);
           }
         });
     });

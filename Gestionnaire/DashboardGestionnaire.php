@@ -350,10 +350,15 @@ foreach ($activites as $a) {
 
                 events.forEach(e => {
 
-                    const start = new Date(e.start);
-                    const end = new Date(e.end);
+                    // Parse robuste ("2026-07-01 10:30:00" -> ISO local).
+                    const start = new Date(String(e.start).replace(' ', 'T'));
+                    const end   = new Date(String(e.end).replace(' ', 'T'));
 
-                    if (cellDate >= start && cellDate <= end) {
+                    // Comparaison au JOUR près (on ignore l'heure).
+                    const startDay = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+                    const endDay   = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+
+                    if (cellDate >= startDay && cellDate <= endDay) {
 
                         const now = new Date();
 

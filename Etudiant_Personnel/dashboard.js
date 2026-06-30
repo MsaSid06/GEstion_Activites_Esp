@@ -37,7 +37,7 @@ async function chargerActivites() {
            DataActivites = data.map(act => ({
     id: act.id_act,
     titre: act.titre,
-    dept: act.nom_struct || "",
+    dept: act.nom_struct || "Non définie",
     type_struct: act.type_struct || "",
     type_act: act.type_act || "",
     statut: act.statut,
@@ -102,17 +102,29 @@ function renderCalendar() {
             return (d.getMonth() === month && d.getFullYear() === year) ? d.getDate() : null;
         }).filter(Boolean);
 
+    const datesTermine = DataActivites
+        .filter(a => a.statut === 'Terminé')
+        .map(a => {
+            if (!a.date || a.date === '-') return null;
+            const parts = a.date.split('/');
+            const d = new Date(parts[2], parts[1] - 1, parts[0]);
+            return (d.getMonth() === month && d.getFullYear() === year) ? d.getDate() : null;
+        }).filter(Boolean);
+
     let daysHTML = "";
     for (let i = firstDayIndex; i > 0; i--) {
         daysHTML += `<div class="text-gray-300">${prevTotalDays - i + 1}</div>`;
     }
     for (let day = 1; day <= totalDays; day++) {
+        const base = 'rounded-full w-8 h-8 flex items-center justify-center mx-auto';
         if (datesEnCours.includes(day)) {
-            daysHTML += `<div class="bg-amber-100 text-amber-700 rounded-full w-8 h-8 flex items-center justify-center mx-auto">${day}</div>`;
+            daysHTML += `<div class="${base}" style="background:#fff0e0;color:#ff7a00">${day}</div>`;
         } else if (datesAvenir.includes(day)) {
-            daysHTML += `<div class="bg-purple-100 text-esp-purple rounded-full w-8 h-8 flex items-center justify-center mx-auto">${day}</div>`;
+            daysHTML += `<div class="${base}" style="background:#e6eff7;color:#0047ab">${day}</div>`;
+        } else if (datesTermine.includes(day)) {
+            daysHTML += `<div class="${base}" style="background:#e7f6ec;color:#16a34a">${day}</div>`;
         } else {
-            daysHTML += `<div class="hover:bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center mx-auto cursor-pointer">${day}</div>`;
+            daysHTML += `<div class="hover:bg-gray-100 ${base} cursor-pointer">${day}</div>`;
         }
     }
     gridDays.innerHTML = daysHTML;
@@ -225,7 +237,7 @@ function openDetailedView(id) {
     document.getElementById("det-date-fin").innerText = act.date_fin;
     document.getElementById("det-heure-fin").innerText = act.heure_fin;
     document.getElementById("det-lieu").innerText = act.lieu;
-    document.getElementById("det-type").innerText = act.type_act || ""; // ← CORRIGÉ
+    document.getElementById("det-type").innerText = act.dept;
 
     const badgeText = document.getElementById("det-badge-text");
     const badge = document.getElementById("det-badge");
@@ -266,16 +278,22 @@ function switchView(viewName) {
     if (viewName === "dashboard") {
         dash.className = "space-y-8 block";
         list.className = "space-y-8 hidden";
-        if (btnDash) btnDash.className = "p-2.5 bg-[#5D1962] rounded-full transition-all";
-        if (btnList) btnList.className = "p-2.5 hover:bg-purple-900/40 rounded-full transition-all";
+        setDockActif(btnDash, true);
+        setDockActif(btnList, false);
     } else {
         dash.className = "space-y-8 hidden";
         list.className = "space-y-8 block";
-        if (btnList) btnList.className = "p-2.5 bg-[#5D1962] rounded-full transition-all";
-        if (btnDash) btnDash.className = "p-2.5 hover:bg-purple-900/40 rounded-full transition-all";
+        setDockActif(btnList, true);
+        setDockActif(btnDash, false);
     }
 }
 
+// Deplace le rond clair (onglet actif) sur le bon bouton de la barre flottante.
+function setDockActif(btn, actif) {
+    if (!btn) return;
+    btn.style.background = actif ? 'rgba(255,255,255,.18)' : 'transparent';
+    btn.style.color = actif ? '#fff' : 'rgba(255,255,255,.72)';
+}
 function remplirSelectStructures() {
     const select = document.getElementById('structure-filter');
     if (!select) return;

@@ -348,5 +348,6 @@ $notifications = getAllNotifications($pdo);
 
     <script src="./dashboard.js"></script>
 </body>
+    
 
 </html>

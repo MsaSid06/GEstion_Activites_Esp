@@ -11,9 +11,9 @@ function connexionBD(): PDO
     $host    = 'localhost';
     $dbname  = 'gestion_activites_esp';
     $user    = 'root';
-    $password = 'lome2006';
+    $password = ''; // ← CORRIGÉ : vide sur XAMPP
     $charset = 'utf8mb4';
-
+//
     $dsn = "mysql:host={$host};dbname={$dbname};charset={$charset}";
 
     $options = [

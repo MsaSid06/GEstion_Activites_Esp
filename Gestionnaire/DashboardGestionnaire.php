@@ -299,6 +299,14 @@ foreach ($activites as $a) {
                     </div>
 
                     <?php endforeach; ?>
+                    <?php if (empty($activites_recentes)): ?>
+
+                    <div
+                        class=" text-center text-gray-500 mt-10 bg-white p-6 rounded-xl shadow flex items-center gap-2 text-gray-500 hover:shadow-lg transition">
+                        <i class="fa-regular fa-folder-open"></i>
+                        Aucune Activités creer par votre structure
+                    </div>
+                    <?php endif; ?>
 
                 </div>
 
@@ -352,11 +360,11 @@ foreach ($activites as $a) {
 
                     // Parse robuste ("2026-07-01 10:30:00" -> ISO local).
                     const start = new Date(String(e.start).replace(' ', 'T'));
-                    const end   = new Date(String(e.end).replace(' ', 'T'));
+                    const end = new Date(String(e.end).replace(' ', 'T'));
 
                     // Comparaison au JOUR près (on ignore l'heure).
                     const startDay = new Date(start.getFullYear(), start.getMonth(), start.getDate());
-                    const endDay   = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+                    const endDay = new Date(end.getFullYear(), end.getMonth(), end.getDate());
 
                     if (cellDate >= startDay && cellDate <= endDay) {
 

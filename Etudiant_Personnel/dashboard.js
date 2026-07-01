@@ -1,6 +1,5 @@
 let DataActivites = [];
 let DataStructures = [];
-let currentDashFilter = "ALL";
 let currentGridFilter = "ALL";
 let currentDept = "ALL";
 let searchQuery = "";
@@ -166,57 +165,31 @@ function updateFilterButtons(activeBtn, groupClass) {
   activeBtn.className = `${groupClass} bg-esp-purple text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-sm`;
 }
 
-function updateDashCardsActive() {
-  const cards = {
-    AVENIR: document.getElementById("card-avenir"),
-    EN_COURS: document.getElementById("card-encours"),
-    TERMINE: document.getElementById("card-termine"),
-  };
-  Object.entries(cards).forEach(([key, el]) => {
-    if (!el) return;
-    if (currentDashFilter === key) {
-      el.classList.add("ring-2", "ring-offset-2", "ring-esp-purple");
-    } else {
-      el.classList.remove("ring-2", "ring-offset-2", "ring-esp-purple");
-    }
-  });
-}
-
 function renderAll() {
   const containerDash = document.getElementById("dashboard-activities-list");
   const containerGrid = document.getElementById("grid-activities-container");
 
-  // --- Pool complet du dashboard (SANS filtre de statut) : ma structure + complément, max 3 ---
+  // --- 3 activités du dashboard : ma structure en priorité, complétées par les plus proches ---
   let dashOwnAll = DataActivites.filter((act) => act.is_ma_structure === 1)
     .sort((a, b) => parseDateFr(a.date) - parseDateFr(b.date));
   let dashOthersAll = DataActivites.filter((act) => act.is_ma_structure === 0)
     .sort((a, b) => parseDateFr(a.date) - parseDateFr(b.date));
 
-  let dashPool = dashOwnAll.slice(0, 3);
-  if (dashPool.length < 3) {
-    dashPool = dashPool.concat(dashOthersAll.slice(0, 3 - dashPool.length));
+  let dashActivites = dashOwnAll.slice(0, 3);
+  if (dashActivites.length < 3) {
+    dashActivites = dashActivites.concat(dashOthersAll.slice(0, 3 - dashActivites.length));
   }
 
-  // --- Compteurs : toujours basés sur ce pool complet, jamais affectés par currentDashFilter ---
-  document.getElementById("counter-avenir").innerText = dashPool.filter(
+  // --- Compteurs : nombre EXACT sur toutes les activités, statiques (non filtrables) ---
+  document.getElementById("counter-avenir").innerText = DataActivites.filter(
     (a) => a.statut === "À venir"
   ).length;
-  document.getElementById("counter-encours").innerText = dashPool.filter(
+  document.getElementById("counter-encours").innerText = DataActivites.filter(
     (a) => a.statut === "En cours"
   ).length;
-  document.getElementById("counter-termine").innerText = dashPool.filter(
+  document.getElementById("counter-termine").innerText = DataActivites.filter(
     (a) => a.statut === "Terminé"
   ).length;
-
-  // --- Liste affichée : le pool filtré selon le bouton cliqué (currentDashFilter) ---
-  let dashActivites = dashPool.filter((act) => {
-    return (
-      currentDashFilter === "ALL" ||
-      (currentDashFilter === "AVENIR" && act.statut === "À venir") ||
-      (currentDashFilter === "EN_COURS" && act.statut === "En cours") ||
-      (currentDashFilter === "TERMINE" && act.statut === "Terminé")
-    );
-  });
 
   // --- Liste des activités : filtre complet (statut + structure choisie + recherche) ---
   let filtered = DataActivites.filter((act) => {
@@ -271,7 +244,7 @@ function renderAll() {
     return;
   }
 
-containerGrid.innerHTML = filtered.map((act) => {
+  containerGrid.innerHTML = filtered.map((act) => {
     const badgeStyle = act.statut === 'À venir'
       ? 'background:#e6eff7;color:#0047ab;'
       : act.statut === 'En cours'
@@ -292,13 +265,6 @@ containerGrid.innerHTML = filtered.map((act) => {
         </div>
     `;
   }).join("");
-}
-
-function filterDashboard(st) {
-  // Si on clique sur le filtre déjà actif, on revient à "Tout" (les 3 activités)
-  currentDashFilter = (currentDashFilter === st) ? "ALL" : st;
-  updateDashCardsActive();
-  renderAll();
 }
 
 function filterGrid(st, btn) {

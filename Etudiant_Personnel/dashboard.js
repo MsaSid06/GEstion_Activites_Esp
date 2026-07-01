@@ -166,33 +166,57 @@ function updateFilterButtons(activeBtn, groupClass) {
   activeBtn.className = `${groupClass} bg-esp-purple text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-sm`;
 }
 
+function updateDashCardsActive() {
+  const cards = {
+    AVENIR: document.getElementById("card-avenir"),
+    EN_COURS: document.getElementById("card-encours"),
+    TERMINE: document.getElementById("card-termine"),
+  };
+  Object.entries(cards).forEach(([key, el]) => {
+    if (!el) return;
+    if (currentDashFilter === key) {
+      el.classList.add("ring-2", "ring-offset-2", "ring-esp-purple");
+    } else {
+      el.classList.remove("ring-2", "ring-offset-2", "ring-esp-purple");
+    }
+  });
+}
+
 function renderAll() {
   const containerDash = document.getElementById("dashboard-activities-list");
   const containerGrid = document.getElementById("grid-activities-container");
 
-  // --- Dashboard : activités de MA structure en priorité, complétées par les plus récentes ---
-  let dashOwn = DataActivites.filter((act) => {
-    const mapStatus =
-      currentDashFilter === "ALL" ||
-      (currentDashFilter === "AVENIR" && act.statut === "À venir") ||
-      (currentDashFilter === "EN_COURS" && act.statut === "En cours") ||
-      (currentDashFilter === "TERMINE" && act.statut === "Terminé");
-    return mapStatus && act.is_ma_structure === 1;
-  }).sort((a, b) => parseDateFr(a.date) - parseDateFr(b.date));
+  // --- Pool complet du dashboard (SANS filtre de statut) : ma structure + complément, max 5 ---
+  let dashOwnAll = DataActivites.filter((act) => act.is_ma_structure === 1)
+    .sort((a, b) => parseDateFr(a.date) - parseDateFr(b.date));
+  let dashOthersAll = DataActivites.filter((act) => act.is_ma_structure === 0)
+    .sort((a, b) => parseDateFr(a.date) - parseDateFr(b.date));
 
-  let dashOthers = DataActivites.filter((act) => {
-    const mapStatus =
-      currentDashFilter === "ALL" ||
-      (currentDashFilter === "AVENIR" && act.statut === "À venir") ||
-      (currentDashFilter === "EN_COURS" && act.statut === "En cours") ||
-      (currentDashFilter === "TERMINE" && act.statut === "Terminé");
-    return mapStatus && act.is_ma_structure === 0;
-  }).sort((a, b) => parseDateFr(a.date) - parseDateFr(b.date));
-
-  let dashActivites = dashOwn.slice(0, 5);
-  if (dashActivites.length < 5) {
-    dashActivites = dashActivites.concat(dashOthers.slice(0, 5 - dashActivites.length));
+  let dashPool = dashOwnAll.slice(0, 5);
+  if (dashPool.length < 5) {
+    dashPool = dashPool.concat(dashOthersAll.slice(0, 5 - dashPool.length));
   }
+
+  // --- Compteurs : toujours basés sur ce pool complet, jamais affectés par currentDashFilter ---
+  document.getElementById("counter-avenir").innerText = dashPool.filter(
+    (a) => a.statut === "À venir"
+  ).length;
+  document.getElementById("counter-encours").innerText = dashPool.filter(
+    (a) => a.statut === "En cours"
+  ).length;
+  document.getElementById("counter-termine").innerText = dashPool.filter(
+    (a) => a.statut === "Terminé"
+  ).length;
+
+  // --- Liste affichée : le pool filtré selon le bouton cliqué (currentDashFilter) ---
+  let dashActivites = dashPool.filter((act) => {
+    return (
+      currentDashFilter === "ALL" ||
+      (currentDashFilter === "AVENIR" && act.statut === "À venir") ||
+      (currentDashFilter === "EN_COURS" && act.statut === "En cours") ||
+      (currentDashFilter === "TERMINE" && act.statut === "Terminé")
+    );
+  });
 
   // --- Liste des activités : filtre complet (statut + structure choisie + recherche) ---
   let filtered = DataActivites.filter((act) => {
@@ -208,16 +232,8 @@ function renderAll() {
     return mapStatus && matchDept && matchSearch;
   });
 
- // --- Compteurs (basés sur les 5 activités affichées dans le dashboard) ---
-  document.getElementById("counter-avenir").innerText = dashActivites.filter(
-    (a) => a.statut === "À venir"
-  ).length;
-  document.getElementById("counter-encours").innerText = dashActivites.filter(
-    (a) => a.statut === "En cours"
-  ).length;
-  document.getElementById("counter-termine").innerText = dashActivites.filter(
-    (a) => a.statut === "Terminé"
-  ).length;
+  document.getElementById("activities-count").innerText =
+    `${filtered.length} activité(s) trouvée(s)`;
 
   // --- Rendu dashboard ---
   if (dashActivites.length === 0) {
@@ -228,7 +244,7 @@ function renderAll() {
             <div class="space-y-1 min-w-0">
                 <div class="flex items-center gap-3 flex-wrap">
                     <span class="${act.statut === 'À venir' ? 'bg-purple-100 text-esp-purple' : act.statut === 'En cours' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'} text-[10px] font-bold px-2.5 py-1 rounded-full">● ${act.statut}</span>
-                    <span class="text-xs font-medium text-gray-400">${act.dept}</span>
+                    <span class="text-xs font-medium text-gray-400">${act.dept || 'Structure non définie'}</span>
                 </div>
                 <h4 class="font-bold text-gray-900 text-base break-words">${act.titre}</h4>
                 <p class="text-xs text-gray-400 break-words">${act.date} ${act.heure_debut} → ${act.date_fin} ${act.heure_fin}</p>
@@ -264,9 +280,10 @@ function renderAll() {
     `).join("");
 }
 
-function filterDashboard(st, btn) {
-  currentDashFilter = st;
-  if (btn) updateFilterButtons(btn, "dash-filter-btn");
+function filterDashboard(st) {
+  // Si on clique sur le filtre déjà actif, on revient à "Tout" (les 5 activités)
+  currentDashFilter = (currentDashFilter === st) ? "ALL" : st;
+  updateDashCardsActive();
   renderAll();
 }
 

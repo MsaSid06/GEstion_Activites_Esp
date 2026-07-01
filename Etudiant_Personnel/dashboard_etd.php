@@ -131,21 +131,21 @@ $notifications = getAllNotifications($pdo);
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div onclick="filterDashboard('AVENIR', null)"
+                <div id="card-avenir" onclick="filterDashboard('AVENIR')"
                     class="bg-white rounded-2xl shadow-sm border-l-[6px] border-[#0047ab] px-6 py-5 flex items-center gap-3 cursor-pointer hover:shadow-md transition">
                     <i class="fa-solid fa-calendar-days text-[#0047ab]" style="font-size:24px"></i>
                     <span id="counter-avenir" class="text-2xl font-black text-[#0047ab]">0</span>
                     <span class="text-2xl font-bold text-[#0047ab]">À venir</span>
                 </div>
 
-                <div onclick="filterDashboard('EN_COURS', null)"
+                <div id="card-encours" onclick="filterDashboard('EN_COURS')"
                     class="bg-white rounded-2xl shadow-sm border-l-[6px] border-[#ff7a00] px-6 py-5 flex items-center gap-3 cursor-pointer hover:shadow-md transition">
                     <i class="fa-solid fa-hourglass-half text-[#ff7a00]" style="font-size:24px"></i>
                     <span id="counter-encours" class="text-2xl font-black text-[#ff7a00]">0</span>
                     <span class="text-2xl font-bold text-[#ff7a00]">En cours</span>
                 </div>
 
-                <div onclick="filterDashboard('TERMINE', null)"
+                <div id="card-termine" onclick="filterDashboard('TERMINE')"
                     class="bg-white rounded-2xl shadow-sm border-l-[6px] border-[#16a34a] px-6 py-5 flex items-center gap-3 cursor-pointer hover:shadow-md transition">
                     <i class="fa-solid fa-circle-check text-[#16a34a]" style="font-size:24px"></i>
                     <span id="counter-termine" class="text-2xl font-black text-[#16a34a]">0</span>

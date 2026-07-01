@@ -177,6 +177,14 @@ if (isset($_SESSION['matricule_user'])) {
             </button>
           </div>
 
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 mb-1.5 px-1">Structure d'appartenance</label>
+            <select id="reg-structure" required
+              class="w-full px-4 py-3 bg-white rounded-xl text-sm outline-none font-medium shadow-sm cursor-pointer">
+              <option value="">Chargement des structures...</option>
+            </select>
+          </div>
+
           <div class="grid grid-cols-2 bg-gray-200/50 p-1 rounded-xl gap-1">
             <button onclick="selectRole('ETUDIANT')" id="role-etu" type="button"
               class="py-2.5 rounded-lg text-xs font-bold transition bg-white text-esp-purple shadow-sm">Étudiant</button>
@@ -306,6 +314,29 @@ if (isset($_SESSION['matricule_user'])) {
       document.getElementById('fields-personnel').classList.toggle('block', !isEtu);
     }
 
+    // Charge la liste des structures pour le select d'inscription
+    async function chargerStructuresInscription() {
+      const select = document.getElementById('reg-structure');
+      try {
+        const res = await fetch('./Etudiant_Personnel/api_structures_public.php');
+        const data = await res.json();
+        if (data.error) {
+          select.innerHTML = `<option value="">Erreur de chargement</option>`;
+          return;
+        }
+        select.innerHTML = `<option value="">Sélectionnez votre structure</option>`;
+        data.forEach(struct => {
+          const option = document.createElement('option');
+          option.value = struct.id_struct;
+          option.textContent = `${struct.nom_struct} (${struct.type_struct})`;
+          select.appendChild(option);
+        });
+      } catch (e) {
+        select.innerHTML = `<option value="">Erreur de chargement</option>`;
+      }
+    }
+    chargerStructuresInscription();
+
     document.getElementById("loginform").addEventListener("submit", function(e) {
       e.preventDefault();
       let email = document.getElementById("email").value;
@@ -347,8 +378,14 @@ if (isset($_SESSION['matricule_user'])) {
         filiere: document.getElementById('reg-filiere').value || '',
         niveau: document.getElementById('reg-niveau').value || '',
         poste: document.getElementById('reg-poste').value || '',
-        specialite: document.getElementById('reg-specialite').value || ''
+        specialite: document.getElementById('reg-specialite').value || '',
+        id_struct: document.getElementById('reg-structure').value || ''
       };
+
+      if (!data.id_struct) {
+        alert("Veuillez sélectionner votre structure.");
+        return;
+      }
 
       const res = await fetch('./Etudiant_Personnel/api_register.php', {
         method: 'POST',

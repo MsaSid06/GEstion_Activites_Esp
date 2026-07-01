@@ -153,6 +153,12 @@ $notifications = getAllNotifications($pdo);
                 </div>
             </div>
 
+           <div class="flex justify-end">
+    <button onclick="switchView('list')"
+        class="bg-white border border-gray-200 text-gray-700 font-bold text-xs px-4 py-2.5 rounded-xl hover:bg-gray-50 transition flex items-center gap-2 shadow-sm">
+        <span>›</span> Voir toutes les activités
+    </button>
+</div>
            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
     <div class="lg:col-span-4 bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
         <div class="flex justify-between items-center mb-6">

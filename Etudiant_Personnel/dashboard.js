@@ -186,15 +186,15 @@ function renderAll() {
   const containerDash = document.getElementById("dashboard-activities-list");
   const containerGrid = document.getElementById("grid-activities-container");
 
-  // --- Pool complet du dashboard (SANS filtre de statut) : ma structure + complément, max 5 ---
+  // --- Pool complet du dashboard (SANS filtre de statut) : ma structure + complément, max 3 ---
   let dashOwnAll = DataActivites.filter((act) => act.is_ma_structure === 1)
     .sort((a, b) => parseDateFr(a.date) - parseDateFr(b.date));
   let dashOthersAll = DataActivites.filter((act) => act.is_ma_structure === 0)
     .sort((a, b) => parseDateFr(a.date) - parseDateFr(b.date));
 
-  let dashPool = dashOwnAll.slice(0, 5);
-  if (dashPool.length < 5) {
-    dashPool = dashPool.concat(dashOthersAll.slice(0, 5 - dashPool.length));
+  let dashPool = dashOwnAll.slice(0, 3);
+  if (dashPool.length < 3) {
+    dashPool = dashPool.concat(dashOthersAll.slice(0, 3 - dashPool.length));
   }
 
   // --- Compteurs : toujours basés sur ce pool complet, jamais affectés par currentDashFilter ---
@@ -239,11 +239,17 @@ function renderAll() {
   if (dashActivites.length === 0) {
     containerDash.innerHTML = `<p class="text-gray-400 text-center py-8">Aucune activité trouvée.</p>`;
   } else {
-    containerDash.innerHTML = dashActivites.map(act => `
+    containerDash.innerHTML = dashActivites.map(act => {
+      const badgeStyle = act.statut === 'À venir'
+        ? 'background:#e6eff7;color:#0047ab;'
+        : act.statut === 'En cours'
+        ? 'background:#fff0e0;color:#ff7a00;'
+        : 'background:#e7f6ec;color:#16a34a;';
+      return `
         <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 hover:shadow-md transition">
             <div class="space-y-1 min-w-0">
                 <div class="flex items-center gap-3 flex-wrap">
-                    <span class="${act.statut === 'À venir' ? 'bg-purple-100 text-esp-purple' : act.statut === 'En cours' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'} text-[10px] font-bold px-2.5 py-1 rounded-full">● ${act.statut}</span>
+                    <span style="${badgeStyle}" class="text-[10px] font-bold px-2.5 py-1 rounded-full">● ${act.statut}</span>
                     <span class="text-xs font-medium text-gray-400">${act.dept || 'Structure non définie'}</span>
                 </div>
                 <h4 class="font-bold text-gray-900 text-base break-words">${act.titre}</h4>
@@ -255,7 +261,8 @@ function renderAll() {
                 </button>
             </div>
         </div>
-    `).join("");
+    `;
+    }).join("");
   }
 
   // --- Rendu liste des activités ---
@@ -281,7 +288,7 @@ function renderAll() {
 }
 
 function filterDashboard(st) {
-  // Si on clique sur le filtre déjà actif, on revient à "Tout" (les 5 activités)
+  // Si on clique sur le filtre déjà actif, on revient à "Tout" (les 3 activités)
   currentDashFilter = (currentDashFilter === st) ? "ALL" : st;
   updateDashCardsActive();
   renderAll();

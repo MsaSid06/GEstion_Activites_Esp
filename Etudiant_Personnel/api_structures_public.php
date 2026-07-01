@@ -1,12 +1,5 @@
 <?php
 header('Content-Type: application/json');
-session_start();
-
-if (!isset($_SESSION['matricule_user'])) {
-    echo json_encode(["error" => "Non autorisé"]);
-    exit;
-}
-
 require_once '../Gestionnaire/config/connexion.php';
 
 try {
@@ -16,9 +9,6 @@ try {
         SELECT 
             id_struct,
             nom_struct,
-            desc_struct,
-            email,
-            tel,
             type_struct
         FROM structure
         ORDER BY nom_struct ASC

@@ -27,9 +27,15 @@ $filiere    = $input['filiere'] ?? '';
 $niveau     = $input['niveau'] ?? '';
 $poste      = $input['poste'] ?? '';
 $specialite = $input['specialite'] ?? '';
+$id_struct  = $input['id_struct'] ?? '';
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     echo json_encode(["error" => "Email invalide."]);
+    exit;
+}
+
+if (!$id_struct) {
+    echo json_encode(["error" => "Veuillez choisir votre structure."]);
     exit;
 }
 
@@ -59,6 +65,9 @@ try {
         $user =  creerUtilisateur($pdo, $matricule, $nom, $prenom, $email, $tel, $mot_de_passe, $profil, 1);
         $etd =  creerEtudiant($pdo, $matricule, $filiere, $niveau);
         if ($etd && $user) {
+            $stmtAppartenir = $pdo->prepare("INSERT INTO APPARTENIR (id_struct, matricule_user) VALUES (:struct, :mat)");
+            $stmtAppartenir->execute([':struct' => $id_struct, ':mat' => $matricule]);
+
             echo json_encode([
                  "success" => true,
                  "message" => "Inscription réussie ! Votre matricule est : $matricule"
@@ -75,6 +84,9 @@ try {
         $user =  creerUtilisateur($pdo, $matricule, $nom, $prenom, $email, $tel, $mot_de_passe, $profil, 1);
         $etd =  creerPersonnel($pdo, $matricule, $poste, $specialite);
         if ($etd && $user) {
+            $stmtAppartenir = $pdo->prepare("INSERT INTO APPARTENIR (id_struct, matricule_user) VALUES (:struct, :mat)");
+            $stmtAppartenir->execute([':struct' => $id_struct, ':mat' => $matricule]);
+
             echo json_encode([
                  "success" => true,
                  "message" => "Inscription réussie ! Votre matricule est : $matricule"

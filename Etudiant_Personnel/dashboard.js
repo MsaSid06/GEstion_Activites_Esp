@@ -271,12 +271,18 @@ function renderAll() {
     return;
   }
 
-  containerGrid.innerHTML = filtered.map((act) => `
+containerGrid.innerHTML = filtered.map((act) => {
+    const badgeStyle = act.statut === 'À venir'
+      ? 'background:#e6eff7;color:#0047ab;'
+      : act.statut === 'En cours'
+      ? 'background:#fff0e0;color:#ff7a00;'
+      : 'background:#e7f6ec;color:#16a34a;';
+    return `
         <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between space-y-4 hover:shadow-md transition">
             <div class="space-y-3">
                 <div class="flex justify-between items-center">
-                    <span class="${act.statut === "À venir" ? "bg-purple-100 text-esp-purple" : act.statut === "En cours" ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"} text-[10px] font-bold px-3 py-1 rounded-full">● ${act.statut}</span>
-                    <span class="text-xs font-semibold text-gray-400">${act.dept}</span>
+                    <span style="${badgeStyle}" class="text-[10px] font-bold px-3 py-1 rounded-full">● ${act.statut}</span>
+                    <span class="text-xs font-semibold text-gray-400">${act.dept || 'Structure non définie'}</span>
                 </div>
                 <h3 class="text-xl font-bold text-gray-900">${act.titre}</h3>
                 <p class="text-gray-500 text-sm line-clamp-2 leading-relaxed">${act.desc}</p>
@@ -284,7 +290,8 @@ function renderAll() {
             </div>
             <button onclick="openDetailedView(${act.id})" class="w-full bg-esp-purple text-white font-bold text-xs py-3.5 rounded-xl transition">Voir les détails</button>
         </div>
-    `).join("");
+    `;
+  }).join("");
 }
 
 function filterDashboard(st) {

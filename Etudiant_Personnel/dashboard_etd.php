@@ -153,59 +153,34 @@ $notifications = getAllNotifications($pdo);
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                <div class="lg:col-span-4 bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
-                    <div class="flex justify-between items-center mb-6">
-                        <span id="calendar-month-year" class="font-bold text-gray-900 text-base capitalize">Juin 2026</span>
-                        <div class="flex items-center gap-3 text-gray-400">
-                            <button onclick="changeMonth(-1)" class="hover:text-gray-700 font-bold text-lg p-1 transition select-none">‹</button>
-                            <button onclick="changeMonth(1)" class="hover:text-gray-700 font-bold text-lg p-1 transition select-none">›</button>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-7 gap-y-4 text-center text-xs font-bold text-gray-400 mb-2">
-                        <div>Lu</div>
-                        <div>Ma</div>
-                        <div>Me</div>
-                        <div>Je</div>
-                        <div>Ve</div>
-                        <div>Sa</div>
-                        <div>Di</div>
-                    </div>
-
-                    <div id="calendar-days-grid" class="grid grid-cols-7 gap-y-3 text-center text-sm font-semibold text-gray-700"></div>
-                </div>
-
-                <div class="lg:col-span-8 space-y-4">
-                    <div class="bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row gap-3 items-center justify-between">
-                        <div class="relative w-full sm:w-72 flex items-center">
-                            <span class="absolute left-4 text-gray-400">
-                                <svg xmlns="[w3.org](http://www.w3.org/2000/svg)" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.602 10.602z" />
-                                </svg>
-                            </span>
-                            <input type="text" oninput="searchActivities(this.value)"
-                                placeholder="Rechercher une activité..."
-                                class="w-full pl-11 pr-4 py-2.5 bg-[#FDFBFD] rounded-xl text-sm outline-none border border-gray-100 focus:ring-1 focus:ring-purple-900">
-                        </div>
-
-                        <div class="flex gap-1 overflow-x-auto w-full sm:w-auto">
-                            <button onclick="filterDashboard('ALL', this)"
-                                class="dash-filter-btn bg-esp-purple text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-sm">Tout</button>
-                            <button onclick="filterDashboard('AVENIR', this)"
-                                class="dash-filter-btn bg-white border border-gray-200 text-gray-600 px-5 py-2.5 rounded-full text-xs font-semibold hover:bg-gray-50">À venir</button>
-                            <button onclick="filterDashboard('EN_COURS', this)"
-                                class="dash-filter-btn bg-white border border-gray-200 text-gray-600 px-5 py-2.5 rounded-full text-xs font-semibold hover:bg-gray-50">En cours</button>
-                            <button onclick="filterDashboard('TERMINE', this)"
-                                class="dash-filter-btn bg-white border border-gray-200 text-gray-600 px-5 py-2.5 rounded-full text-xs font-semibold hover:bg-gray-50">Terminé</button>
-                        </div>
-                    </div>
-
-                    <div id="dashboard-activities-list" class="space-y-4"></div>
-                </div>
+           <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    <div class="lg:col-span-4 bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+        <div class="flex justify-between items-center mb-6">
+            <span id="calendar-month-year" class="font-bold text-gray-900 text-base capitalize">Juin 2026</span>
+            <div class="flex items-center gap-3 text-gray-400">
+                <button onclick="changeMonth(-1)" class="hover:text-gray-700 font-bold text-lg p-1 transition select-none">‹</button>
+                <button onclick="changeMonth(1)" class="hover:text-gray-700 font-bold text-lg p-1 transition select-none">›</button>
             </div>
+        </div>
+
+        <div class="grid grid-cols-7 gap-y-4 text-center text-xs font-bold text-gray-400 mb-2">
+            <div>Lu</div>
+            <div>Ma</div>
+            <div>Me</div>
+            <div>Je</div>
+            <div>Ve</div>
+            <div>Sa</div>
+            <div>Di</div>
+        </div>
+
+        <div id="calendar-days-grid" class="grid grid-cols-7 gap-y-3 text-center text-sm font-semibold text-gray-700"></div>
+    </div>
+
+    <div class="lg:col-span-8 space-y-4">
+        <div id="dashboard-activities-list" class="space-y-4"></div>
+    </div>
+</div>
+
         </section>
 
         <section id="view-activities-list" class="space-y-8 hidden">

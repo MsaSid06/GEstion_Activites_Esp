@@ -1,10 +1,10 @@
 let DataActivites = [];
 let DataStructures = [];
-let currentFilter = "ALL";
+let currentDashFilter = "ALL";
+let currentGridFilter = "ALL";
 let currentDept = "ALL";
 let searchQuery = "";
 let currentDate = new Date();
-let currentStructure = "ALL";
 let viewHistory = "dashboard";
 
 window.onload = async function () {
@@ -13,6 +13,7 @@ window.onload = async function () {
   renderAll();
   renderCalendar();
 };
+
 async function chargerStructures() {
   try {
     const res = await fetch("api_structures.php");
@@ -36,12 +37,12 @@ async function chargerActivites() {
     console.log(data);
 
     if (!data.error) {
-      DataActivites = data.map((act) => ({
+      DataActivites = data.map(act => ({
         id: act.id_act,
         titre: act.titre,
-        dept: act.nom_struct || "Non définie",
+        dept: act.nom_struct || "",
         type_struct: act.type_struct || "",
-        type_act: act.type_act || "",
+        type_act: act.type_act ?? "",
         statut: act.statut,
         date: formatDate(act.date_debut),
         date_fin: formatDate(act.date_fin),
@@ -49,6 +50,7 @@ async function chargerActivites() {
         heure_fin: formatHeure(act.date_fin),
         lieu: act.lieu,
         desc: act.description || "",
+        is_ma_structure: act.is_ma_structure || 0
       }));
     }
   } catch (e) {
@@ -72,6 +74,12 @@ function formatHeure(dateStr) {
   const h = String(d.getHours()).padStart(2, "0");
   const m = String(d.getMinutes()).padStart(2, "0");
   return `${h}h${m}`;
+}
+
+function parseDateFr(dateStr) {
+  if (!dateStr || dateStr === "-") return 0;
+  const [d, m, y] = dateStr.split("/");
+  return new Date(y, m - 1, d).getTime();
 }
 
 function renderCalendar() {
@@ -162,12 +170,37 @@ function renderAll() {
   const containerDash = document.getElementById("dashboard-activities-list");
   const containerGrid = document.getElementById("grid-activities-container");
 
+  // --- Dashboard : activités de MA structure en priorité, complétées par les plus récentes ---
+  let dashOwn = DataActivites.filter((act) => {
+    const mapStatus =
+      currentDashFilter === "ALL" ||
+      (currentDashFilter === "AVENIR" && act.statut === "À venir") ||
+      (currentDashFilter === "EN_COURS" && act.statut === "En cours") ||
+      (currentDashFilter === "TERMINE" && act.statut === "Terminé");
+    return mapStatus && act.is_ma_structure === 1;
+  }).sort((a, b) => parseDateFr(a.date) - parseDateFr(b.date));
+
+  let dashOthers = DataActivites.filter((act) => {
+    const mapStatus =
+      currentDashFilter === "ALL" ||
+      (currentDashFilter === "AVENIR" && act.statut === "À venir") ||
+      (currentDashFilter === "EN_COURS" && act.statut === "En cours") ||
+      (currentDashFilter === "TERMINE" && act.statut === "Terminé");
+    return mapStatus && act.is_ma_structure === 0;
+  }).sort((a, b) => parseDateFr(a.date) - parseDateFr(b.date));
+
+  let dashActivites = dashOwn.slice(0, 5);
+  if (dashActivites.length < 5) {
+    dashActivites = dashActivites.concat(dashOthers.slice(0, 5 - dashActivites.length));
+  }
+
+  // --- Liste des activités : filtre complet (statut + structure choisie + recherche) ---
   let filtered = DataActivites.filter((act) => {
     const mapStatus =
-      currentFilter === "ALL" ||
-      (currentFilter === "AVENIR" && act.statut === "À venir") ||
-      (currentFilter === "EN_COURS" && act.statut === "En cours") ||
-      (currentFilter === "TERMINE" && act.statut === "Terminé");
+      currentGridFilter === "ALL" ||
+      (currentGridFilter === "AVENIR" && act.statut === "À venir") ||
+      (currentGridFilter === "EN_COURS" && act.statut === "En cours") ||
+      (currentGridFilter === "TERMINE" && act.statut === "Terminé");
     const matchDept = currentDept === "ALL" || act.dept === currentDept;
     const matchSearch =
       act.titre.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -175,45 +208,47 @@ function renderAll() {
     return mapStatus && matchDept && matchSearch;
   });
 
-  document.getElementById("counter-avenir").innerText = DataActivites.filter(
-    (a) => a.statut === "À venir",
+ // --- Compteurs (basés sur les 5 activités affichées dans le dashboard) ---
+  document.getElementById("counter-avenir").innerText = dashActivites.filter(
+    (a) => a.statut === "À venir"
   ).length;
-  document.getElementById("counter-encours").innerText = DataActivites.filter(
-    (a) => a.statut === "En cours",
+  document.getElementById("counter-encours").innerText = dashActivites.filter(
+    (a) => a.statut === "En cours"
   ).length;
-  document.getElementById("counter-termine").innerText = DataActivites.filter(
-    (a) => a.statut === "Terminé",
+  document.getElementById("counter-termine").innerText = dashActivites.filter(
+    (a) => a.statut === "Terminé"
   ).length;
-  document.getElementById("activities-count").innerText =
-    `${filtered.length} activité(s) trouvée(s)`;
 
-  if (filtered.length === 0) {
+  // --- Rendu dashboard ---
+  if (dashActivites.length === 0) {
     containerDash.innerHTML = `<p class="text-gray-400 text-center py-8">Aucune activité trouvée.</p>`;
+  } else {
+    containerDash.innerHTML = dashActivites.map(act => `
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 hover:shadow-md transition">
+            <div class="space-y-1 min-w-0">
+                <div class="flex items-center gap-3 flex-wrap">
+                    <span class="${act.statut === 'À venir' ? 'bg-purple-100 text-esp-purple' : act.statut === 'En cours' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'} text-[10px] font-bold px-2.5 py-1 rounded-full">● ${act.statut}</span>
+                    <span class="text-xs font-medium text-gray-400">${act.dept}</span>
+                </div>
+                <h4 class="font-bold text-gray-900 text-base break-words">${act.titre}</h4>
+                <p class="text-xs text-gray-400 break-words">${act.date} ${act.heure_debut} → ${act.date_fin} ${act.heure_fin}</p>
+            </div>
+            <div class="shrink-0 self-start sm:self-center">
+                <button onclick="openDetailedView(${act.id})" class="btn-details-light font-bold text-xs px-5 py-2.5 rounded-full transition flex items-center gap-1.5 focus:outline-none">
+                    Détails
+                </button>
+            </div>
+        </div>
+    `).join("");
+  }
+
+  // --- Rendu liste des activités ---
+  if (filtered.length === 0) {
     containerGrid.innerHTML = `<p class="text-gray-400 text-center py-8 col-span-2">Aucune activité trouvée.</p>`;
     return;
   }
 
-  containerDash.innerHTML = filtered
-    .map(
-      (act) => `
-        <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center hover:shadow-md transition">
-            <div class="space-y-1">
-                <div class="flex items-center gap-3">
-                    <span class="${act.statut === "À venir" ? "bg-purple-100 text-esp-purple" : act.statut === "En cours" ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"} text-[10px] font-bold px-2.5 py-1 rounded-full">● ${act.statut}</span>
-                    <span class="text-xs font-medium text-gray-400">${act.dept}</span>
-                </div>
-                <h4 class="font-bold text-gray-900 text-base">${act.titre}</h4>
-                <p class="text-xs text-gray-400">${act.date} ${act.heure_debut} → ${act.date_fin} ${act.heure_fin}</p>
-            </div>
-            <button onclick="openDetailedView(${act.id})" class="btn-details-light font-bold text-xs px-5 py-2.5 rounded-full transition flex items-center gap-1.5 focus:outline-none">Détails</button>
-        </div>
-    `,
-    )
-    .join("");
-
-  containerGrid.innerHTML = filtered
-    .map(
-      (act) => `
+  containerGrid.innerHTML = filtered.map((act) => `
         <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between space-y-4 hover:shadow-md transition">
             <div class="space-y-3">
                 <div class="flex justify-between items-center">
@@ -226,19 +261,17 @@ function renderAll() {
             </div>
             <button onclick="openDetailedView(${act.id})" class="w-full bg-esp-purple text-white font-bold text-xs py-3.5 rounded-xl transition">Voir les détails</button>
         </div>
-    `,
-    )
-    .join("");
+    `).join("");
 }
 
 function filterDashboard(st, btn) {
-  currentFilter = st;
+  currentDashFilter = st;
   if (btn) updateFilterButtons(btn, "dash-filter-btn");
   renderAll();
 }
 
 function filterGrid(st, btn) {
-  currentFilter = st;
+  currentGridFilter = st;
   if (btn) updateFilterButtons(btn, "grid-filter-btn");
   renderAll();
 }
@@ -247,6 +280,7 @@ function filterDepartment(dp) {
   currentDept = dp;
   renderAll();
 }
+
 function searchActivities(v) {
   searchQuery = v;
   renderAll();
@@ -328,12 +362,12 @@ function switchView(viewName) {
   }
 }
 
-// Deplace le rond clair (onglet actif) sur le bon bouton de la barre flottante.
 function setDockActif(btn, actif) {
   if (!btn) return;
   btn.style.background = actif ? "rgba(255,255,255,.18)" : "transparent";
   btn.style.color = actif ? "#fff" : "rgba(255,255,255,.72)";
 }
+
 function remplirSelectStructures() {
   const select = document.getElementById("structure-filter");
   if (!select) return;
